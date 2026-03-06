@@ -624,8 +624,8 @@ app.post('/api/coordinator/emergency', async (req, res) => {
 // Serve static files from the React build directory
 app.use(express.static(path.join(__dirname, '../dist')));
 
-// Serve the React app for any route that doesn't match an API or static file
-app.get('*', (req, res) => {
+// Use a regular expression for catch-all to satisfy Express 5 / path-to-regexp
+app.get(/^(.*)$/, (req, res) => {
   const indexPath = path.join(__dirname, '../dist/index.html');
   
   // Check if dist/index.html exists (only in production)
