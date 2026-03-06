@@ -49,6 +49,8 @@ const primaryCategoryOf = (reg: any) => selectedEventsOf(reg)[0]?.category || St
 
 const SuperAdminDashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isRegistrationEnabled, setIsRegistrationEnabled] = useState(true);
+  const [isTogglingRegistration, setIsTogglingRegistration] = useState(false);
   const [registrations, setRegistrations] = useState<any[]>([]);
   const [alerts, setAlerts] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -77,20 +79,43 @@ const SuperAdminDashboard = () => {
 
   const fetchData = async () => {
     try {
-      const [regsRes, alertsRes] = await Promise.all([
+      const [regsRes, alertsRes, settingsRes] = await Promise.all([
         fetch(`${API_BASE}/api/admin/registrations`),
-        fetch(`${API_BASE}/api/admin/alerts`)
+        fetch(`${API_BASE}/api/admin/alerts`),
+        fetch(`${API_BASE}/api/admin/settings/registration-status`)
       ]);
-      const [regs, alts] = await Promise.all([regsRes.json(), alertsRes.json()]);
+      const [regs, alts, settings] = await Promise.all([
+        regsRes.json(), 
+        alertsRes.json(), 
+        settingsRes.json()
+      ]);
+      
       const safeRegs = toArray<any>(regs);
       const safeAlerts = toArray<any>(alts);
       setRegistrations(safeRegs);
       setAlerts(safeAlerts);
+      if (settings.success) setIsRegistrationEnabled(settings.enabled);
 
       const latestOpen = safeAlerts.find((a) => isOpenAlert(a)) || null;
       setOverlayAlert(latestOpen);
     } catch (err) {
       console.error('Error fetching data:', err);
+    }
+  };
+
+  const toggleRegistration = async () => {
+    setIsTogglingRegistration(true);
+    try {
+      const res = await fetch(`${API_BASE}/api/admin/settings/toggle-registration`, { method: 'POST' });
+      const data = await res.json();
+      if (data.success) {
+        setIsRegistrationEnabled(data.enabled);
+        audioService.playClick();
+      }
+    } catch (err) {
+      alert('Failed to toggle registration.');
+    } finally {
+      setIsTogglingRegistration(false);
     }
   };
 
@@ -304,7 +329,17 @@ const SuperAdminDashboard = () => {
             <h1 className="text-2xl md:text-3xl font-black uppercase tracking-tight">CENTRAL <span className="text-tech-cyan">COMMAND</span></h1>
             <p className="text-[10px] md:text-xs text-slate-500 uppercase font-mono tracking-widest mt-1">Neuron Nexus 2026 MASTER CONTROL PANEL</p>
           </div>
-          <div className="flex w-full md:w-auto gap-4">
+          <div className="flex flex-col md:flex-row w-full md:w-auto gap-4 items-center">
+             {/* Registration Toggle */}
+             <button
+               onClick={toggleRegistration}
+               disabled={isTogglingRegistration}
+               className={`flex items-center gap-2 px-4 py-2 rounded-xl border transition-all text-[10px] font-black uppercase tracking-widest ${isRegistrationEnabled ? 'bg-green-500/10 border-green-500/30 text-green-400 hover:bg-green-500/20' : 'bg-red-500/10 border-red-500/30 text-red-400 hover:bg-red-500/20'}`}
+             >
+               <div className={`w-2 h-2 rounded-full ${isRegistrationEnabled ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`} />
+               REGISTRATION: {isRegistrationEnabled ? 'OPEN' : 'CLOSED'}
+             </button>
+
              <div className="relative flex-grow md:w-64">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 w-4 h-4" />
                 <input 

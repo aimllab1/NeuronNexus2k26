@@ -265,6 +265,18 @@ const alertSchema = new mongoose.Schema({
 
 const Alert = mongoose.models.Alert || mongoose.model('Alert', alertSchema);
 
+const settingsSchema = new mongoose.Schema({
+  key:   { type: String, unique: true },
+  value: mongoose.Schema.Types.Mixed
+});
+const Settings = mongoose.models.Settings || mongoose.model('Settings', settingsSchema);
+
+// Helper to get registration status
+async function isRegistrationOpen() {
+  const s = await Settings.findOne({ key: 'registration_enabled' });
+  return s ? !!s.value : true; // Default to true
+}
+
 // ─── HELPER: Google Sheets Sync ──────────────────────────────────────────────
 async function syncToGoogleSheets(scriptUrl, payload) {
   const body = payload;
@@ -327,9 +339,42 @@ async function syncToGoogleSheets(scriptUrl, payload) {
 
 // ─── ROUTES ──────────────────────────────────────────────────────────────────
 
+// Get registration status
+app.get('/api/admin/settings/registration-status', async (req, res) => {
+  try {
+    const status = await isRegistrationOpen();
+    res.json({ success: true, enabled: status });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// Toggle registration status
+app.post('/api/admin/settings/toggle-registration', async (req, res) => {
+  try {
+    const current = await isRegistrationOpen();
+    await Settings.findOneAndUpdate(
+      { key: 'registration_enabled' },
+      { value: !current },
+      { upsert: true, new: true }
+    );
+    res.json({ success: true, enabled: !current });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 // 1. Submit Registration
 app.post('/api/register', async (req, res) => {
   try {
+    // CHECK IF REGISTRATION IS OPEN
+    if (!(await isRegistrationOpen())) {
+      return res.status(403).json({ 
+        success: false, 
+        message: 'Registrations are currently closed by the administrator.' 
+      });
+    }
+
     const { email, fullName, phone, college, department, year } = req.body;
     const safeEmail = normalizeEmail(email);
     const safeFullName = sanitizeText(fullName);
