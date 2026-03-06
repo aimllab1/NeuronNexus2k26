@@ -1,0 +1,20 @@
+:root {
+  --bg: #1a1a1a; /* Dark background */
+  --wash-a: rgba(26, 26, 26, 0.9);
+  --wash-b: rgba(44, 44, 44, 0.98);
+  --wash-c: rgba(20, 20, 20, 0.86);
+}
+
+body.canvas-fallback {
+  background:
+    radial-gradient(circle at 50% 45%, var(--wash-a) 0%, var(--wash-b) 56%, var(--wash-c) 100%);
+}
+
+#bg {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+}

@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply text-tech-white overflow-x-hidden relative min-h-screen selection:bg-tech-cyan/30 selection:text-tech-cyan;
+    background-color: transparent; /* Let BackgroundHUD handle the color */
+  }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-space-950;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-tech-blue/30 hover:bg-tech-cyan/50 rounded-full border border-space-900;
+  }
+}
+
+/* Ensure consistent component borders */
+.tech-border {
+  @apply border border-white/10 backdrop-blur-md bg-space-900/50 hover:border-tech-cyan/50 hover:shadow-neon transition-all duration-300;
+}
+
+/* Typography Helpers */
+.font-tech {
+  @apply font-mono uppercase tracking-widest text-xs text-tech-cyan/80;
+}

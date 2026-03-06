@@ -1,0 +1,13 @@
+.App {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.App > nav,
+.App > div,
+.App > footer,
+.App > section {
+  position: relative;
+  z-index: 1;
+}
