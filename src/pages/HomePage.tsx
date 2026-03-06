@@ -45,7 +45,7 @@ const HomePage = () => {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-5xl sm:text-7xl md:text-[6.5rem] lg:text-[9rem] font-black tracking-tight md:tracking-tighter mb-4 bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-slate-500 relative z-10 drop-shadow-[0_0_30px_rgba(255,255,255,0.1)] uppercase"
+            className="text-4xl sm:text-6xl md:text-[5rem] lg:text-[7.5rem] font-black tracking-tight md:tracking-tighter mb-4 bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-slate-500 relative z-10 drop-shadow-[0_0_30px_rgba(255,255,255,0.1)] uppercase"
           >
             NEURON <span className="text-tech-cyan">NEXUS 2026</span>
           </motion.h1>
