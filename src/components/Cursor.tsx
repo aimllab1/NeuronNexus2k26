@@ -4,7 +4,6 @@ import { useCursor } from '../context/CursorContext';
 
 const Cursor = () => {
   const { isMagnetic } = useCursor();
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   const springConfig = { damping: 20, stiffness: 300, mass: 0.5 };
   const cursorX = useSpring(0, springConfig);
@@ -12,7 +11,6 @@ const Cursor = () => {
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
       cursorX.set(e.clientX - (isMagnetic ? 20 : 8));
       cursorY.set(e.clientY - (isMagnetic ? 20 : 8));
     };

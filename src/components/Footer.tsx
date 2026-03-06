@@ -1,4 +1,4 @@
-import { Twitter, Linkedin, Mail, Youtube, Phone, MessageCircle } from 'lucide-react';
+import { Twitter, Linkedin, Mail, Youtube } from 'lucide-react';
 import NeuralLogo from './NeuralLogo';
 
 const Footer = () => {

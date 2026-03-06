@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { Trophy, Star, LogOut, Activity, ShieldAlert, User } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import { Trophy, Star, LogOut, Activity, ShieldAlert } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { API_BASE } from '../utils/api';
 

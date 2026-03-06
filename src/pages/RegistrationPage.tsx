@@ -178,7 +178,6 @@ const RegistrationPage = () => {
     });
   };
 
-  const selectedTechnicalCount = formData.selectedEvents.filter((s) => s.category === 'Technical').length;
   const selectedNonTechnicalCount = formData.selectedEvents.filter((s) => s.category === 'Non-Technical').length;
 
   if (success) {
