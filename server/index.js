@@ -363,10 +363,25 @@ app.post('/api/register', async (req, res) => {
       ticketId,
       password: hashedPassword,
     });
-    await newRegistration.save();
+    const normalizedRegistrationData = {
+      fullName: safeFullName,
+      email: safeEmail,
+      phone: safePhone,
+      college: safeCollege,
+      department: safeDepartment,
+      year: safeYear,
+      category: safeCategory,
+      event: safeEvent,
+      selectedEvents: safeSelectedEvents,
+      teamMembers: paymentDetails.teamMembers,
+      participantCount: paymentDetails.participantCount,
+      paymentAmount: paymentDetails.paymentAmount,
+      ticketId,
+      password: randomPass
+    };
 
     if (process.env.APPS_SCRIPT_URL) {
-      syncToGoogleSheets(process.env.APPS_SCRIPT_URL, { ...req.body, ticketId, password: randomPass });
+      syncToGoogleSheets(process.env.APPS_SCRIPT_URL, normalizedRegistrationData);
     }
 
     res.status(201).json({
