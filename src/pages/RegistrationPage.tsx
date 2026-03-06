@@ -28,7 +28,6 @@ const validateSelectedEvents = (selectedEvents: SelectedEvent[]) => {
 
   // rules when two events are chosen
   if (selectedEvents.length === 2) {
-    const technicalCount = selectedEvents.filter((s) => s.category === 'Technical').length;
     const nonTechnicalCount = selectedEvents.filter((s) => s.category === 'Non-Technical').length;
 
     // two non-technical events not allowed
@@ -178,6 +177,7 @@ const RegistrationPage = () => {
     });
   };
 
+  const selectedTechnicalCount = formData.selectedEvents.filter((s) => s.category === 'Technical').length;
   const selectedNonTechnicalCount = formData.selectedEvents.filter((s) => s.category === 'Non-Technical').length;
 
   if (success) {
