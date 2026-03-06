@@ -604,10 +604,21 @@ app.post('/api/coordinator/emergency', async (req, res) => {
   }
 });
 
-// ─── SPA Support ─────────────────────────────────────────────────────────────
-// use '*' instead of '/*' to satisfy path-to-regexp parsing in Express 5
+// ─── SPA Support & Static Files ──────────────────────────────────────────────
+// Serve static files from the React build directory
+app.use(express.static(path.join(__dirname, '../dist')));
+
+// Serve the React app for any route that doesn't match an API or static file
 app.get('*', (req, res) => {
-  res.send('APEC AIML Backend API is running.');
+  const indexPath = path.join(__dirname, '../dist/index.html');
+  
+  // Check if dist/index.html exists (only in production)
+  res.sendFile(indexPath, (err) => {
+    if (err) {
+      // Fallback message if dist hasn't been built yet
+      res.status(200).send('APEC AIML Backend API is running. (Frontend build not found)');
+    }
+  });
 });
 
 // ─── Start Server ─────────────────────────────────────────────────────────────

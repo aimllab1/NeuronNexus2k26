@@ -8,6 +8,8 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
+    "start": "node server/index.js",
+    "postinstall": "cd server && npm install",
     "tailwind-init": "node ./node_modules/tailwindcss/bin/tailwindcss.js init -p"
   },
   "dependencies": {
