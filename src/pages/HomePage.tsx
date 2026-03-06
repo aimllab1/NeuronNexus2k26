@@ -41,14 +41,14 @@ const HomePage = () => {
             <span className="text-tech-cyan">NEXUS 2026</span>
           </motion.h1>
 
-          {/* PARALLEL FLOATING NODES (Desktop only) */}
-          <div className="hidden xl:block">
+          {/* PARALLEL FLOATING NODES (Visible on tablets and larger to support zoom) */}
+          <div className="hidden lg:block">
             {/* LEVEL 1: TOP */}
             <FloatingNode 
               icon={<Calendar size={28} />}
               label="Event Date"
               value="18th March 2026"
-              className="absolute top-0 left-[2%] text-tech-cyan"
+              className="absolute -top-10 left-[0%] xl:left-[2%] text-tech-cyan"
               delay={1.2}
               bounce={15}
             />
@@ -56,7 +56,7 @@ const HomePage = () => {
               icon={<Users size={24} />}
               label="Formation"
               value="Max 4 Members"
-              className="absolute top-0 right-[2%] text-purple-400"
+              className="absolute -top-10 right-[0%] xl:right-[2%] text-purple-400"
               delay={1.4}
               bounce={18}
             />
@@ -66,7 +66,7 @@ const HomePage = () => {
               icon={<Coins size={24} />}
               label="Entry Fee"
               value="Rs. 100 / Head"
-              className="absolute top-[40%] -left-4 text-amber-400"
+              className="absolute top-[35%] -left-8 xl:-left-4 text-amber-400"
               delay={1.6}
               bounce={12}
             />
@@ -74,7 +74,7 @@ const HomePage = () => {
               icon={<Award size={24} />}
               label="Recognition"
               value="Certificates"
-              className="absolute top-[40%] -right-4 text-emerald-400"
+              className="absolute top-[35%] -right-8 xl:-right-4 text-emerald-400"
               delay={1.8}
               bounce={10}
             />
@@ -84,7 +84,7 @@ const HomePage = () => {
               icon={<Coffee size={24} />}
               label="Hospitality"
               value="Refreshments"
-              className="absolute top-[80%] left-[5%] text-tech-blue"
+              className="absolute top-[75%] left-[2%] xl:left-[5%] text-tech-blue"
               delay={2.0}
               bounce={14}
             />
@@ -92,15 +92,15 @@ const HomePage = () => {
               icon={<Gift size={24} />}
               label="Rewards"
               value="Exciting Prizes"
-              className="absolute top-[80%] right-[5%] text-rose-400"
+              className="absolute top-[75%] right-[2%] xl:right-[5%] text-rose-400"
               delay={2.2}
               bounce={16}
             />
           </div>
         </div>
 
-        {/* Mobile Display Badge List */}
-        <div className="xl:hidden flex flex-wrap justify-center gap-4 mb-12">
+        {/* Mobile Display Badge List (Hidden on Large Desktop) */}
+        <div className="lg:hidden flex flex-wrap justify-center gap-4 mb-12">
           <MobileInfoBadge icon={<Calendar size={14}/>} value="18 Mar 2026" color="text-tech-cyan" />
           <MobileInfoBadge icon={<Coins size={14}/>} value="Rs. 100" color="text-amber-400" />
           <MobileInfoBadge icon={<Users size={14}/>} value="Team Max 4" color="text-purple-400" />

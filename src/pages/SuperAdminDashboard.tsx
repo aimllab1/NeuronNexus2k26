@@ -48,6 +48,7 @@ const eventSummaryOf = (reg: any) =>
 const primaryCategoryOf = (reg: any) => selectedEventsOf(reg)[0]?.category || String(reg?.category || '').trim();
 
 const SuperAdminDashboard = () => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [registrations, setRegistrations] = useState<any[]>([]);
   const [alerts, setAlerts] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -225,7 +226,17 @@ const SuperAdminDashboard = () => {
   const latestAlerts = alerts.slice(0, 8);
 
   return (
-    <div className="flex h-screen text-white overflow-hidden relative">
+    <div className="flex flex-col md:flex-row h-screen text-white overflow-hidden relative">
+      {/* Mobile Header */}
+      <div className="md:hidden bg-space-900/80 backdrop-blur-md border-b border-white/10 p-4 flex justify-between items-center z-[50] mt-16">
+        <div className="flex items-center gap-2">
+          <ShieldCheck className="text-tech-cyan" size={20} />
+          <span className="text-lg font-black tracking-tighter uppercase font-mono">APEC <span className="text-tech-cyan">HUB</span></span>
+        </div>
+        <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="p-2 text-white">
+          <Activity size={24} />
+        </button>
+      </div>
       {overlayAlert && (
         <div className="fixed inset-0 z-[120] bg-red-950/80 backdrop-blur-sm flex items-center justify-center p-6">
           <div className="w-full max-w-3xl rounded-3xl border-2 border-red-300/80 bg-red-900/40 shadow-[0_0_80px_rgba(239,68,68,0.55)] p-8 md:p-10 animate-pulse">
@@ -261,12 +272,17 @@ const SuperAdminDashboard = () => {
       )}
 
       {/* HUD Sidebar */}
-      <aside className="w-64 border-r border-white/10 flex flex-col p-6 bg-space-900/50 backdrop-blur-xl shrink-0 z-20">
-        <div className="flex items-center gap-2 mb-12">
-          <div className="p-2 border border-tech-cyan/50 rounded-lg bg-tech-cyan/10 shadow-[0_0_10px_rgba(6,182,212,0.2)]">
-            <ShieldCheck className="text-tech-cyan" size={24} />
+      <aside className={`fixed inset-y-0 left-0 w-64 border-r border-white/10 flex flex-col p-6 bg-space-900/95 backdrop-blur-xl shrink-0 z-[60] transition-transform duration-300 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0`}>
+        <div className="flex items-center justify-between mb-12">
+          <div className="flex items-center gap-2">
+            <div className="p-2 border border-tech-cyan/50 rounded-lg bg-tech-cyan/10 shadow-[0_0_10px_rgba(6,182,212,0.2)]">
+              <ShieldCheck className="text-tech-cyan" size={24} />
+            </div>
+            <span className="text-xl font-black tracking-tighter uppercase font-mono">APEC <span className="text-tech-cyan">HUB</span></span>
           </div>
-          <span className="text-xl font-black tracking-tighter uppercase font-mono">APEC <span className="text-tech-cyan">HUB</span></span>
+          <button onClick={() => setIsSidebarOpen(false)} className="md:hidden text-slate-400">
+            <X size={24} />
+          </button>
         </div>
 
         <nav className="flex-grow space-y-2">
@@ -282,14 +298,14 @@ const SuperAdminDashboard = () => {
       </aside>
 
       {/* Main Command Center */}
-      <main className="flex-grow overflow-y-auto p-8 custom-scrollbar relative z-10">
-        <div className="flex justify-between items-center mb-12">
+      <main className="flex-grow overflow-y-auto p-4 md:p-8 custom-scrollbar relative z-10">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-12">
           <div>
-            <h1 className="text-3xl font-black uppercase tracking-tight">CENTRAL <span className="text-tech-cyan">COMMAND</span></h1>
-            <p className="text-xs text-slate-500 uppercase font-mono tracking-widest mt-1">Neuron Nexus 2026 MASTER CONTROL PANEL</p>
+            <h1 className="text-2xl md:text-3xl font-black uppercase tracking-tight">CENTRAL <span className="text-tech-cyan">COMMAND</span></h1>
+            <p className="text-[10px] md:text-xs text-slate-500 uppercase font-mono tracking-widest mt-1">Neuron Nexus 2026 MASTER CONTROL PANEL</p>
           </div>
-          <div className="flex gap-4">
-             <div className="relative w-64">
+          <div className="flex w-full md:w-auto gap-4">
+             <div className="relative flex-grow md:w-64">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 w-4 h-4" />
                 <input 
                   placeholder="SEARCH PARTICIPANTS..."
@@ -301,21 +317,21 @@ const SuperAdminDashboard = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-12">
-          <StatPanel label="TOTAL USERS" value={stats.total} color="border-white/10" icon={<Users size={20} />} />
-          <StatPanel label="TOTAL HEADCOUNT" value={stats.participants} color="border-white/10" icon={<Users size={20} />} />
-          <StatPanel label="REVENUE" value={`₹${stats.paidAmount}`} color="border-tech-cyan/30 text-tech-cyan" icon={<CreditCard size={20} />} />
-          <StatPanel label="ON-SITE" value={stats.attendance} color="border-green-500/20 text-green-500" icon={<UserCheck size={20} />} />
+        <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 md:gap-6 mb-12">
+          <StatPanel label="USERS" value={stats.total} color="border-white/10" icon={<Users size={16} />} />
+          <StatPanel label="HEADS" value={stats.participants} color="border-white/10" icon={<Users size={16} />} />
+          <StatPanel label="REVENUE" value={`₹${stats.paidAmount}`} color="border-tech-cyan/30 text-tech-cyan" icon={<CreditCard size={16} />} />
+          <StatPanel label="ON-SITE" value={stats.attendance} color="border-green-500/20 text-green-500" icon={<UserCheck size={16} />} />
           <StatPanel
             label="ALERTS"
             value={stats.openAlerts}
             color={stats.openAlerts > 0 ? 'border-red-500/50 shadow-red-500/20' : 'border-white/5 opacity-50'}
-            icon={<Bell size={20} />}
+            icon={<Bell size={16} />}
             critical={stats.openAlerts > 0}
           />
         </div>
 
-        <div className="mb-10 bg-space-900/50 border border-white/10 rounded-3xl p-6 backdrop-blur-md">
+        <div className="mb-10 bg-space-900/50 border border-white/10 rounded-2xl md:rounded-3xl p-4 md:p-6 backdrop-blur-md">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-sm font-black tracking-widest uppercase text-red-400">Emergency Alerts</h3>
             <div className="flex items-center gap-2">
@@ -365,8 +381,8 @@ const SuperAdminDashboard = () => {
           )}
         </div>
 
-        <div className="bg-space-900/50 border border-white/10 rounded-3xl overflow-hidden backdrop-blur-md">
-           <table className="w-full text-left text-[11px] border-collapse">
+        <div className="bg-space-900/50 border border-white/10 rounded-2xl md:rounded-3xl overflow-x-auto backdrop-blur-md">
+           <table className="min-w-[800px] w-full text-left text-[11px] border-collapse">
               <thead>
                 <tr className="border-b border-white/5 bg-white/5 text-slate-500 uppercase tracking-widest font-mono">
                   <th className="p-4">Ticket / Pass</th>

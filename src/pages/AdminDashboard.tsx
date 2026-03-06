@@ -132,13 +132,13 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="pt-28 pb-20 px-6 max-w-7xl mx-auto min-h-screen">
-      <div className="flex flex-col md:flex-row justify-between items-end gap-6 mb-10">
+    <div className="pt-28 pb-20 px-4 sm:px-6 max-w-7xl mx-auto min-h-screen">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-10">
         <div>
-          <h1 className="text-4xl font-black text-white mb-2 tracking-tight uppercase">
+          <h1 className="text-3xl sm:text-4xl font-black text-white mb-2 tracking-tight uppercase">
             Admin 1 <span className="text-tech-cyan">Payment Monitor</span>
           </h1>
-          <p className="text-slate-500 font-mono text-xs tracking-widest uppercase">
+          <p className="text-slate-500 font-mono text-[10px] sm:text-xs tracking-widest uppercase">
             Event filter and participant search with payment confirmation only
           </p>
         </div>
@@ -162,13 +162,13 @@ const AdminDashboard = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
-        <StatBox label="Registrations" value={stats.totalRegistrations} tone="white" />
-        <StatBox label="Participants" value={stats.totalParticipants} tone="white" />
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 mb-8">
+        <StatBox label="Regs" value={stats.totalRegistrations} tone="white" />
+        <StatBox label="Heads" value={stats.totalParticipants} tone="white" />
         <StatBox label="Paid" value={stats.paid} tone="cyan" />
-        <StatBox label="Attendance" value={stats.attendance} tone="green" />
-        <StatBox label="Paid Amount" value={`Rs.${stats.paidAmount}`} tone="cyan" />
-        <StatBox label="Pending Amount" value={`Rs.${stats.pendingAmount}`} tone="amber" />
+        <StatBox label="Attnd" value={stats.attendance} tone="green" />
+        <StatBox label="Total" value={`₹${stats.paidAmount}`} tone="cyan" />
+        <StatBox label="Pend" value={`₹${stats.pendingAmount}`} tone="amber" />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_260px] gap-4 mb-8">
