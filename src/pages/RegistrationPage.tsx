@@ -155,8 +155,14 @@ const RegistrationPage = () => {
           paymentAmount: Number(data.paymentAmount) >= 0 ? Number(data.paymentAmount) : 100,
           paymentPerHead: Number(data.paymentPerHead) > 0 ? Number(data.paymentPerHead) : 100,
         });
+        if (data?.sheetsSync) {
+          // this object is primarily for debugging sync failures
+          console.log('Apps script sync result:', data.sheetsSync);
+        }
         if (data?.sheetsSync?.attempted && !data?.sheetsSync?.success) {
-          alert(`Registration saved, but Apps Script sync failed: ${data.sheetsSync.error || 'Unknown error'}`);
+          alert(
+            `Registration saved, but Apps Script sync failed: ${data.sheetsSync.error || 'Unknown error'}`
+          );
         }
         setSuccess(true);
       } else {
