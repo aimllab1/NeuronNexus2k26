@@ -30,10 +30,11 @@ const LoginPage = () => {
 
   const handleParticipantLogin = async () => {
     const loginEmail = username.trim().toLowerCase();
+    const loginPassword = password.trim();
     const response = await fetch(`${API_BASE}/api/participant/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: loginEmail, password }),
+      body: JSON.stringify({ email: loginEmail, password: loginPassword }),
     });
     const data = await response.json();
 
