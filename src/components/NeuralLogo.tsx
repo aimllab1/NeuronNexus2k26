@@ -11,7 +11,7 @@ const NeuralLogo = ({ size = 42, className = '' }: NeuralLogoProps) => {
       aria-hidden="true"
     >
       <img 
-        src="/favicon.png" 
+        src="https://uploads.onecompiler.io/44fjqfzxs/44fjqgf4u/icon.png" 
         alt="Neuron Nexus Logo" 
         className="w-full h-full object-cover"
       />
