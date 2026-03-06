@@ -293,16 +293,36 @@ async function syncToGoogleSheets(scriptUrl, payload) {
       validateStatus: () => true,
     });
 
+    // log the raw response to aid debugging when sheet sync behaves unexpectedly
+    console.log('[GoogleSheetsSync] response', {
+      status: followed.status,
+      data: followed.data,
+    });
+
     if (followed.status >= 200 && followed.status < 300) {
       if (hasSuccessMarker(followed.data)) {
         sheetsSyncState.lastStatus = 'success';
         sheetsSyncState.lastSuccessAt = new Date().toISOString();
-        return { success: true, status: followed.status };
+        return { success: true, status: followed.status, data: followed.data };
       }
+      // if we reach here, the web app returned 2xx but didn't contain expected marker
+      console.warn('[GoogleSheetsSync] success status without marker', followed.status, followed.data);
+      sheetsSyncState.lastStatus = 'failed';
+      sheetsSyncState.lastError = 'Response lacked success marker';
+      return { success: false, status: followed.status, data: followed.data, error: sheetsSyncState.lastError };
     }
-  } catch (err) {}
 
-  return { success: false, error: 'Sync failed' };
+    // non-2xx status codes
+    console.warn('[GoogleSheetsSync] non-2xx status', followed.status, followed.data);
+    sheetsSyncState.lastStatus = 'failed';
+    sheetsSyncState.lastError = `HTTP ${followed.status}`;
+    return { success: false, status: followed.status, data: followed.data, error: sheetsSyncState.lastError };
+  } catch (err) {
+    console.error('[GoogleSheetsSync] error', err.message);
+    sheetsSyncState.lastStatus = 'failed';
+    sheetsSyncState.lastError = err.message;
+    return { success: false, error: err.message };
+  }
 }
 
 // ─── ROUTES ──────────────────────────────────────────────────────────────────
@@ -363,6 +383,10 @@ app.post('/api/register', async (req, res) => {
       ticketId,
       password: hashedPassword,
     });
+    
+    // SAVE TO DATABASE
+    await newRegistration.save();
+
     const normalizedRegistrationData = {
       fullName: safeFullName,
       email: safeEmail,
@@ -380,8 +404,11 @@ app.post('/api/register', async (req, res) => {
       password: randomPass
     };
 
+    let sheetsSyncResult = { attempted: false };
     if (process.env.APPS_SCRIPT_URL) {
-      syncToGoogleSheets(process.env.APPS_SCRIPT_URL, normalizedRegistrationData);
+      // wait for sync and include result so the frontend can show an error message
+      const result = await syncToGoogleSheets(process.env.APPS_SCRIPT_URL, normalizedRegistrationData);
+      sheetsSyncResult = { attempted: true, ...result };
     }
 
     res.status(201).json({
@@ -391,6 +418,7 @@ app.post('/api/register', async (req, res) => {
       participantCount: paymentDetails.participantCount,
       paymentAmount: paymentDetails.paymentAmount,
       paymentPerHead: PAYMENT_PER_HEAD,
+      sheetsSync: sheetsSyncResult,
     });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
