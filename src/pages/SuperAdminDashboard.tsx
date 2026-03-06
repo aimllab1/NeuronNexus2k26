@@ -449,27 +449,27 @@ const SuperAdminDashboard = () => {
                 <EditInput 
                   label="Full Name" 
                   value={editFormData.fullName} 
-                  onChange={(v) => setEditFormData(p => ({...p, fullName: v}))} 
+                  onChange={(v: string) => setEditFormData(p => ({...p, fullName: v}))} 
                 />
                 <EditInput 
                   label="Email (Login)" 
                   value={editFormData.email} 
-                  onChange={(v) => setEditFormData(p => ({...p, email: v}))} 
+                  onChange={(v: string) => setEditFormData(p => ({...p, email: v}))} 
                 />
                 <EditInput 
                   label="Phone" 
                   value={editFormData.phone} 
-                  onChange={(v) => setEditFormData(p => ({...p, phone: v}))} 
+                  onChange={(v: string) => setEditFormData(p => ({...p, phone: v}))} 
                 />
                 <EditInput 
                   label="College" 
                   value={editFormData.college} 
-                  onChange={(v) => setEditFormData(p => ({...p, college: v}))} 
+                  onChange={(v: string) => setEditFormData(p => ({...p, college: v}))} 
                 />
                 <EditInput 
                   label="Department" 
                   value={editFormData.department} 
-                  onChange={(v) => setEditFormData(p => ({...p, department: v}))} 
+                  onChange={(v: string) => setEditFormData(p => ({...p, department: v}))} 
                 />
                 <div className="flex flex-col gap-1.5">
                   <label className="text-[10px] text-slate-500 uppercase font-black tracking-widest ml-1">Year</label>
@@ -494,7 +494,7 @@ const SuperAdminDashboard = () => {
                       key={i}
                       label={`Member ${i+1}`}
                       value={m}
-                      onChange={(v) => {
+                      onChange={(v: string) => {
                         const newM = [...editFormData.teamMembers];
                         newM[i] = v;
                         setEditFormData(p => ({...p, teamMembers: newM}));

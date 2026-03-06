@@ -257,7 +257,7 @@ const ParticipantDashboard = () => {
               <Star size={16}/> Select Event to View Status
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              {selectedEventsList.map((evt, idx) => (
+              {selectedEventsList.map((evt: any, idx: number) => (
                 <button
                   key={idx}
                   onClick={() => { setActiveEventIndex(idx); audioService.playClick(); }}
