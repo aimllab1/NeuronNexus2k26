@@ -30,24 +30,16 @@ const HomePage = () => {
         {/* Main Title Area */}
         <div className="relative w-full mb-16 py-10">
           
-          {/* LOGO */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.92 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.18 }}
-            className="mb-6 relative z-10"
-          >
-            <NeuralLogo size={80} className="mx-auto" />
-          </motion.div>
-
-          {/* MAIN TITLE - Back to Normal Bold Representation */}
+          {/* MAIN TITLE - Split into two lines */}
           <motion.h1 
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-4xl sm:text-6xl md:text-[5rem] lg:text-[7.5rem] font-black tracking-tight md:tracking-tighter mb-4 bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-slate-500 relative z-10 drop-shadow-[0_0_30px_rgba(255,255,255,0.1)] uppercase"
+            className="text-5xl sm:text-7xl md:text-[6rem] lg:text-[8.5rem] font-black tracking-tight md:tracking-tighter mb-4 bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-slate-500 relative z-10 drop-shadow-[0_0_30px_rgba(255,255,255,0.1)] uppercase leading-none"
           >
-            NEURON <span className="text-tech-cyan">NEXUS 2026</span>
+            NEURON
+            <br />
+            <span className="text-tech-cyan">NEXUS 2026</span>
           </motion.h1>
 
           {/* PARALLEL FLOATING NODES (Desktop only) */}
