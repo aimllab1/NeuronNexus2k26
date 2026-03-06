@@ -4,13 +4,45 @@
 class AudioService {
   private ctx: AudioContext | null = null;
   private alarmInterval: any = null;
+  private unlocked = false;
+  private pendingAlarm = false;
+
+  constructor() {
+    // listen for a user interaction so the AudioContext can be resumed
+    const unlock = () => {
+      if (!this.ctx) {
+        this.ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      }
+      if (this.ctx.state === 'suspended') {
+        this.ctx.resume().catch(() => {
+          /* ignore */
+        });
+      }
+      this.unlocked = true;
+      document.removeEventListener('click', unlock);
+      document.removeEventListener('keydown', unlock);
+      document.removeEventListener('touchstart', unlock);
+
+      // if an alarm was queued because context was locked, start it now
+      if (this.pendingAlarm) {
+        this.pendingAlarm = false;
+        this.realStartAlarm();
+      }
+    };
+
+    document.addEventListener('click', unlock);
+    document.addEventListener('keydown', unlock);
+    document.addEventListener('touchstart', unlock);
+  }
 
   private init() {
     if (!this.ctx) {
       this.ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
     }
-    if (this.ctx.state === 'suspended') {
-      this.ctx.resume();
+    if (this.ctx.state === 'suspended' && this.unlocked) {
+      this.ctx.resume().catch(() => {
+        /* ignore */
+      });
     }
   }
 
@@ -51,9 +83,19 @@ class AudioService {
 
   // Persistent Emergency Alarm
   startAlarm() {
+    // if the context hasn't been unlocked yet, queue the alarm and wait for a user gesture
+    if (!this.unlocked) {
+      this.pendingAlarm = true;
+      return;
+    }
+    if (this.alarmInterval) return;
+    this.realStartAlarm();
+  }
+
+  private realStartAlarm() {
     if (this.alarmInterval) return;
     this.init();
-    
+
     const playTone = () => {
       if (!this.ctx) return;
       const now = this.ctx.currentTime;
