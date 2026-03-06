@@ -182,7 +182,10 @@ app.get('/coordinators', (req, res) => {
 
 // ─── MongoDB Connection ──────────────────────────────────────────────────────
 mongoose
-  .connect(process.env.MONGODB_URI, { serverSelectionTimeoutMS: 10000 })
+  .connect(process.env.MONGODB_URI, { 
+    serverSelectionTimeoutMS: 10000,
+    bufferCommands: false // Disable buffering for serverless
+  })
   .then(() => console.log('✅ Connected to MongoDB Atlas'))
   .catch((err) => {
     console.error('❌ MongoDB connection error:', err.message);
