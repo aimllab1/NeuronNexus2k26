@@ -605,8 +605,8 @@ app.post('/api/coordinator/emergency', async (req, res) => {
 });
 
 // ─── SPA Support ─────────────────────────────────────────────────────────────
-// use a regex literal to satisfy path-to-regexp parsing (avoids PathError in Express 5)
-app.get(/^(.*)$/, (req, res) => {
+// use '/*' instead of '*' to satisfy path-to-regexp parsing (avoids PathError)
+app.get('/*', (req, res) => {
   res.send('APEC AIML Backend API is running.');
 });
 

@@ -12,7 +12,7 @@ export const sessions: Session[] = [
   {
     id: 't1',
     title: 'Concept Expo',
-    speaker: 'Event Coordinator',
+    speaker: 'Incharge: Narkis Banu',
     time: '',
     description: 'Present your innovative ideas and technical concepts with clarity and impact.',
     type: 'technical',
@@ -20,7 +20,7 @@ export const sessions: Session[] = [
   {
     id: 't2',
     title: 'Proto Fest',
-    speaker: 'Event Coordinator',
+    speaker: 'Incharge: Pushparaj',
     time: '',
     description: 'Showcase your working prototype and explain your implementation approach.',
     type: 'technical',
@@ -28,7 +28,7 @@ export const sessions: Session[] = [
   {
     id: 't3',
     title: 'Code Rush',
-    speaker: 'Event Coordinator',
+    speaker: 'Incharge: Hariharan',
     time: '',
     description: 'Find and fix code issues quickly through practical debugging challenges.',
     type: 'technical',
@@ -36,7 +36,7 @@ export const sessions: Session[] = [
   {
     id: 't4',
     title: 'App Architects',
-    speaker: 'Event Coordinator',
+    speaker: 'Incharge: Lokeswaran',
     time: '',
     description: 'Build a functional application and demonstrate your problem-solving skills.',
     type: 'technical',
@@ -44,7 +44,7 @@ export const sessions: Session[] = [
   {
     id: 't5',
     title: 'Brain Rush',
-    speaker: 'Event Coordinator',
+    speaker: 'Incharge: Gopinath',
     time: '',
     description: 'Solve rapid-fire technical and logic challenges under time pressure.',
     type: 'technical',
@@ -86,7 +86,7 @@ export const sessions: Session[] = [
   {
     id: 'nt5',
     title: 'Crown Mate',
-    speaker: 'Coordinator: Gopinath',
+    speaker: 'Incharge: Vishwa',
     time: '',
     description: 'Play chess and outsmart opponents through strategic moves.',
     type: 'non-technical',
