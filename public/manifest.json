@@ -1,0 +1,16 @@
+{
+  "short_name": "NeuronNexus",
+  "name": "Neuron Nexus 2026",
+  "icons": [
+    {
+      "src": "https://uploads.onecompiler.io/44fjqfzxs/44fjqgf4u/icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#0f172a",
+  "background_color": "#0f172a"
+}
