@@ -14,8 +14,6 @@ const REQUIRED_ENV = ['MONGODB_URI'];
 const missingEnv = REQUIRED_ENV.filter((k) => !process.env[k]);
 if (missingEnv.length > 0) {
   console.error(`❌ Missing required environment variables: ${missingEnv.join(', ')}`);
-  console.error('   Create a .env file (see .env.example) and restart.');
-  process.exit(1);
 }
 
 if (!process.env.APPS_SCRIPT_URL) {
@@ -29,6 +27,45 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
+// ─── MongoDB Connection Helper ──────────────────────────────────────────────
+let cachedDb = null;
+
+async function connectToDatabase() {
+  if (cachedDb && mongoose.connection.readyState === 1) {
+    return cachedDb;
+  }
+  
+  if (!process.env.MONGODB_URI) {
+    throw new Error('MONGODB_URI is not defined in environment variables');
+  }
+
+  console.log('🔄 Connecting to MongoDB...');
+  cachedDb = await mongoose.connect(process.env.MONGODB_URI, {
+    serverSelectionTimeoutMS: 10000,
+    bufferCommands: false,
+  });
+  console.log('✅ Connected to MongoDB Atlas');
+  return cachedDb;
+}
+
+// Middleware to ensure DB is connected before handling requests
+app.use(async (req, res, next) => {
+  // Skip DB check for health route
+  if (req.path === '/api/health') return next();
+  
+  try {
+    await connectToDatabase();
+    next();
+  } catch (err) {
+    console.error('❌ Database connection error:', err.message);
+    res.status(503).json({
+      success: false,
+      message: 'Database unavailable. Ensure 0.0.0.0/0 is added to MongoDB Atlas Network Access.',
+      error: err.message
+    });
+  }
+});
+
 const isDatabaseConnected = () => mongoose.connection.readyState === 1;
 const PAYMENT_PER_HEAD = Number(process.env.PAYMENT_PER_HEAD) > 0 ? Number(process.env.PAYMENT_PER_HEAD) : 100;
 
@@ -180,20 +217,6 @@ app.get('/coordinators', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'coordinators.html'));
 });
 
-// ─── MongoDB Connection ──────────────────────────────────────────────────────
-mongoose
-  .connect(process.env.MONGODB_URI, { 
-    serverSelectionTimeoutMS: 10000,
-    bufferCommands: false // Disable buffering for serverless
-  })
-  .then(() => console.log('✅ Connected to MongoDB Atlas'))
-  .catch((err) => {
-    console.error('❌ MongoDB connection error:', err.message);
-    console.error('Atlas Access List likely blocks this machine IP.');
-  });
-
-// ─── SCHEMAS ─────────────────────────────────────────────────────────────────
-
 app.get('/api/health', (req, res) => {
   res.json({
     success: true,
@@ -202,16 +225,6 @@ app.get('/api/health', (req, res) => {
     appsScriptConfigured: Boolean(process.env.APPS_SCRIPT_URL),
     paymentPerHead: PAYMENT_PER_HEAD,
     sheetsSync: sheetsSyncState,
-  });
-});
-
-app.use('/api', (req, res, next) => {
-  if (req.path === '/health') return next();
-  if (isDatabaseConnected()) return next();
-
-  return res.status(503).json({
-    success: false,
-    message: 'Database unavailable. Add this machine IP to MongoDB Atlas Network Access and restart server.',
   });
 });
 
@@ -240,7 +253,7 @@ const registrationSchema = new mongoose.Schema({
   registrationDate:  { type: Date, default: Date.now },
 });
 
-const Registration = mongoose.model('Registration', registrationSchema);
+const Registration = mongoose.models.Registration || mongoose.model('Registration', registrationSchema);
 
 const alertSchema = new mongoose.Schema({
   event:   String,
@@ -250,7 +263,7 @@ const alertSchema = new mongoose.Schema({
   date:    { type: Date, default: Date.now },
 });
 
-const Alert = mongoose.model('Alert', alertSchema);
+const Alert = mongoose.models.Alert || mongoose.model('Alert', alertSchema);
 
 // ─── HELPER: Google Sheets Sync ──────────────────────────────────────────────
 async function syncToGoogleSheets(scriptUrl, payload) {
