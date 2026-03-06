@@ -1,7 +1,6 @@
 import { motion } from 'framer-motion';
 import { NavLink } from 'react-router-dom';
 import { ArrowRight, LayoutDashboard, Coffee, Coins, Calendar, Users, Award, Gift } from 'lucide-react';
-import NeuralLogo from '../components/NeuralLogo';
 import { audioService } from '../utils/audio';
 
 const HomePage = () => {
