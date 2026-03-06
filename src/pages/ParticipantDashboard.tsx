@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, Lock, Edit2, Save, X, CheckCircle2, Trophy, Clock, LogOut, LayoutDashboard, AlertTriangle, Smartphone, QrCode, MessageCircle, Star } from 'lucide-react';
+import { User, Lock, Edit2, Save, X, CheckCircle2, Clock, LogOut, LayoutDashboard, AlertTriangle, Smartphone, QrCode, MessageCircle, Star } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { API_BASE } from '../utils/api';
 import { audioService } from '../utils/audio';

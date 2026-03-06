@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ShieldCheck, Activity, Users, CreditCard, Bell, ShieldAlert, LogOut, Search, Trash2, Edit2, X } from 'lucide-react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { API_BASE } from '../utils/api';
 import { audioService } from '../utils/audio';
 
