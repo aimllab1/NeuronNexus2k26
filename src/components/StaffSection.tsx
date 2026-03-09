@@ -35,11 +35,6 @@ const StaffSection: React.FC = () => {
       position: 'Principal',
       icon: <GraduationCap className="w-8 h-8 text-tech-cyan" />
     },
-    {
-      name: 'Mr. J SENTHIL KUMAR',
-      position: 'Assistant HOD',
-      icon: <UserCheck className="w-8 h-8 text-emerald-400" />
-    },
   ];
 
   const coordinators = [

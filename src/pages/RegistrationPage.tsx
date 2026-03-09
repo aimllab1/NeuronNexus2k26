@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle, Users, ArrowRight, ArrowLeft, ExternalLink, Ticket, UserCircle2, Mail } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import { API_BASE } from '../utils/api';
+import BrandHeader from '../components/BrandHeader';
 
 type EventCategory = 'Technical' | 'Non-Technical';
 type SelectedEvent = { category: EventCategory; event: string };
@@ -266,6 +267,9 @@ const RegistrationPage = () => {
 
   return (
     <div className="pt-32 pb-20 px-6 max-w-4xl mx-auto">
+      <div className="mb-8">
+        <BrandHeader />
+      </div>
       <div className="mb-12 text-center">
         <h1 className="text-4xl font-black text-white mb-2 tracking-tighter uppercase">
           Neural Nexus 2026 <span className="text-tech-cyan">REGISTRATION</span>

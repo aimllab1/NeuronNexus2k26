@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Shield, Lock, User, ArrowRight } from 'lucide-react';
 import { API_BASE } from '../utils/api';
+import BrandHeader from '../components/BrandHeader';
 
 type AdminConfig = {
   password: string;
@@ -102,6 +103,9 @@ const LoginPage = () => {
 
   return (
     <div className="pt-32 pb-20 px-6 max-w-md mx-auto min-h-screen">
+      <div className="mb-8">
+        <BrandHeader />
+      </div>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

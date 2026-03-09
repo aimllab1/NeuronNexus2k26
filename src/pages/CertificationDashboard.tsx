@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Award, Download, Printer } from 'lucide-react';
 import { API_BASE } from '../utils/api';
+import BrandHeader from '../components/BrandHeader';
 
 const EVENT_OPTIONS = [
   'Concept Expo',
@@ -73,6 +74,9 @@ const CertificationDashboard = () => {
 
   return (
     <div className="pt-32 pb-20 px-6 max-w-7xl mx-auto min-h-screen">
+      <div className="mb-8">
+        <BrandHeader />
+      </div>
       <div className="flex flex-col md:flex-row justify-between items-end gap-6 mb-12">
         <div>
           <h1 className="text-4xl font-black text-white mb-2 uppercase tracking-tight">RANKINGS <span className="text-tech-cyan">& CERTS</span></h1>

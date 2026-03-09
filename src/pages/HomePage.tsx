@@ -114,9 +114,9 @@ const HomePage = () => {
           transition={{ duration: 0.8, delay: 0.4 }}
           className="max-w-4xl mb-12 flex flex-col items-center gap-1.5"
         >
-          <span className="text-[10px] md:text-xs font-mono text-slate-400 uppercase tracking-[0.3em]">National level technical seminar</span>
-          <span className="text-[8px] md:text-[10px] font-mono text-tech-cyan/50 uppercase tracking-[0.4em]">On</span>
-          <span className="text-sm md:text-xl font-bold text-white uppercase tracking-[0.15em] opacity-90">
+          <span className="text-sm md:text-lg font-mono text-slate-400 uppercase tracking-[0.3em]">National level technical seminar</span>
+          <span className="text-xs md:text-sm font-mono text-tech-cyan/50 uppercase tracking-[0.4em]">On</span>
+          <span className="text-2xl md:text-4xl font-bold text-white uppercase tracking-[0.15em] opacity-90">
             Tech fusion : Where engineering meets Intelligence
           </span>
         </motion.p>
