@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { API_BASE } from '../utils/api';
 import { audioService } from '../utils/audio';
 import BrandHeader from '../components/BrandHeader';
+import NeuralLogo from '../components/NeuralLogo';
 
 const ParticipantDashboard = () => {
   const UPI_ID = 'gxwr1.wallet@phonepe';
