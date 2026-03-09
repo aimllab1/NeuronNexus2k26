@@ -224,7 +224,7 @@ const ParticipantDashboard = () => {
                 className="overflow-hidden mt-6 flex flex-col items-center border-t border-white/5 pt-6"
               >
                 <div className="p-4 bg-white rounded-2xl">
-                  <img src="/image/UPI QR.jpg" alt="UPI QR" className="w-48 h-48" />
+                  <img src="https://uploads.onecompiler.io/44fjqfzxs/44fjqgf4u/icon.png" alt="UPI QR" className="w-48 h-48" />
                 </div>
                 <p className="mt-4 text-[10px] text-slate-500 font-mono uppercase tracking-widest">Scan to Pay: {UPI_ID}</p>
               </motion.div>
