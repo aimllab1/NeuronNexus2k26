@@ -36,7 +36,7 @@ const HomePage = () => {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="text-5xl sm:text-7xl md:text-[6rem] lg:text-[8.5rem] font-black tracking-tight md:tracking-tighter mb-4 bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-slate-500 relative z-10 drop-shadow-[0_0_30px_rgba(255,255,255,0.1)] uppercase leading-none"
           >
-            NEURON
+            NEURAL
             <br />
             <span className="text-tech-cyan">NEXUS 2026</span>
           </motion.h1>
@@ -112,12 +112,12 @@ const HomePage = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="text-lg md:text-2xl text-slate-400 max-w-3xl mb-10 leading-relaxed font-medium"
+          className="max-w-4xl mb-12 flex flex-col items-center gap-2"
         >
-          National level student seminar On tech fusion
-          <br />
-          <span className="text-xl md:text-3xl font-black text-white mt-4 block tracking-tighter uppercase">
-            Where engineering meets Intelligence
+          <span className="text-xl md:text-3xl font-black text-slate-400 uppercase tracking-[0.1em]">National level technical seminar</span>
+          <span className="text-lg md:text-2xl font-black text-tech-cyan/80 uppercase tracking-widest">On</span>
+          <span className="text-2xl md:text-5xl font-black text-white uppercase tracking-tighter">
+            Tech fusion : Where engineering meets Intelligence
           </span>
         </motion.p>
 
