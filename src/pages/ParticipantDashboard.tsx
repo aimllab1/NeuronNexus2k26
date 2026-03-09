@@ -284,7 +284,7 @@ const ParticipantDashboard = () => {
               <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
                 <div>
                   <h3 className="text-2xl font-black text-white uppercase tracking-tight">
-                    {activeEvent?.event || 'Symposium Event'}
+                    {activeEvent?.event || 'Seminar Event'}
                   </h3>
                   <p className="text-xs text-tech-cyan font-bold uppercase tracking-widest mt-1 opacity-70">
                     Current Progress: Round {currentRound}

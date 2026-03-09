@@ -186,6 +186,12 @@ const RegistrationPage = () => {
   const selectedTechnicalCount = formData.selectedEvents.filter((s) => s.category === 'Technical').length;
   const selectedNonTechnicalCount = formData.selectedEvents.filter((s) => s.category === 'Non-Technical').length;
 
+  useEffect(() => {
+    if (success) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [success]);
+
   if (success) {
     return (
       <div className="pt-32 pb-20 px-6 max-w-2xl mx-auto text-center">

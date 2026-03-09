@@ -112,11 +112,13 @@ const HomePage = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="text-lg md:text-2xl text-slate-400 max-w-2xl mb-10 leading-relaxed font-medium"
+          className="text-lg md:text-2xl text-slate-400 max-w-3xl mb-10 leading-relaxed font-medium"
         >
-          National Level Student Seminar <span className="text-tech-cyan font-semibold">&</span> Tech Fusion.
+          National level student seminar On tech fusion
           <br />
-          Explore the boundaries of <span className="text-tech-blue font-semibold">Innovation</span> & <span className="text-tech-cyan font-semibold">Technology</span>.
+          <span className="text-xl md:text-3xl font-black text-white mt-4 block tracking-tighter uppercase">
+            Where engineering meets Intelligence
+          </span>
         </motion.p>
 
         {/* CTA Buttons */}
@@ -164,10 +166,10 @@ const HomePage = () => {
                 </div>
               </div>
               <h2 className="text-3xl font-black uppercase tracking-widest text-white mb-4">
-                Symposium <span className="text-tech-cyan">Logistics</span>
+                Tech <span className="text-tech-cyan">Seminar</span>
               </h2>
               <p className="text-slate-400 text-base leading-relaxed mb-4 font-bold">
-                Join us for a day of intensive technical exchange and creative fusion.
+                National Level Student Seminar & Tech Fusion. Explore the boundaries of Innovation & Technology
               </p>
             </div>
 

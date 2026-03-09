@@ -15,7 +15,7 @@ const ADMIN_CREDENTIALS: Record<string, AdminConfig> = {
   admin2: { password: 'sympo2026p2', route: '/admin-control-pannel-2' },
   coordinator: { password: 'sympo2026c', route: '/coordinator-panel-3' },
   admin4: { password: 'sympo2026p4', route: '/admin-control-pannel-4' },
-  admin5: { password: 'sympo2026master', route: '/admin-control-pannel-5', superAdmin: true },
+  admin5: { password: '@AiMl@', route: '/admin-control-pannel-5', superAdmin: true },
 };
 
 const LoginPage = () => {
