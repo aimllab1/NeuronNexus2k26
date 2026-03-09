@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Search, UserCheck, CheckCircle2, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { API_BASE } from '../utils/api';
+import BrandHeader from '../components/BrandHeader';
 
 const EVENT_OPTIONS = [
   'Concept Expo',
@@ -94,6 +95,7 @@ const AttendanceDashboard = () => {
 
   return (
     <div className="pt-28 pb-20 px-6 max-w-7xl mx-auto min-h-screen">
+      <BrandHeader />
       <div className="flex flex-col md:flex-row justify-between items-end gap-6 mb-10">
         <div>
           <h1 className="text-4xl font-black text-white mb-2 tracking-tight uppercase">

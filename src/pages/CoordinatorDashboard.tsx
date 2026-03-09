@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Trophy, Star, LogOut, Activity, ShieldAlert } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { API_BASE } from '../utils/api';
+import BrandHeader from '../components/BrandHeader';
 
 const EVENT_OPTIONS = [
   'Concept Expo',
@@ -245,6 +246,7 @@ const CoordinatorDashboard = () => {
       </aside>
 
       <main className="flex-grow overflow-y-auto p-8 custom-scrollbar">
+        <BrandHeader />
         <div className="mb-12">
           <h1 className="text-3xl font-black uppercase tracking-tight">
             PARTICIPANT <span className="text-purple-400">ENGAGEMENT</span>

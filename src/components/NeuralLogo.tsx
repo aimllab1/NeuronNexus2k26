@@ -12,7 +12,7 @@ const NeuralLogo = ({ size = 42, className = '' }: NeuralLogoProps) => {
     >
       <img 
         src="https://uploads.onecompiler.io/44fjqfzxs/44fjqgf4u/icon.png" 
-        alt="Neuron Nexus Logo" 
+        alt="Neural Nexus Logo" 
         className="w-full h-full object-cover"
       />
     </div>

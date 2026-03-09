@@ -13,7 +13,7 @@ const Footer = () => {
         <div className="text-center md:text-left">
           <div className="flex items-center justify-center md:justify-start gap-3 mb-2">
             <NeuralLogo size={40} className="hover:scale-110 transition-transform duration-300 cursor-pointer" />
-            <h2 className="text-2xl font-black text-white">NEURON <span className="text-tech-cyan">NEXUS 2026</span></h2>
+            <h2 className="text-2xl font-black text-white">NEURAL <span className="text-tech-cyan">NEXUS 2026</span></h2>
           </div>
           <div className="flex flex-col sm:flex-row gap-4 items-center md:items-start opacity-70">
             <p className="text-xs font-medium tracking-wide">(c) 2026 Dept of CSE (AI&ML). APEC.</p>

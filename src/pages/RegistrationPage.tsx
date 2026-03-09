@@ -268,7 +268,7 @@ const RegistrationPage = () => {
     <div className="pt-32 pb-20 px-6 max-w-4xl mx-auto">
       <div className="mb-12 text-center">
         <h1 className="text-4xl font-black text-white mb-2 tracking-tighter uppercase">
-          Neuron Nexus 2026 <span className="text-tech-cyan">REGISTRATION</span>
+          Neural Nexus 2026 <span className="text-tech-cyan">REGISTRATION</span>
         </h1>
         <div className="flex justify-center items-center gap-4 mt-8">
           {[1, 2].map((num) => (

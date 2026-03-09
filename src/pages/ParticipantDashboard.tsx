@@ -4,7 +4,7 @@ import { User, Lock, Edit2, Save, X, CheckCircle2, Clock, LogOut, LayoutDashboar
 import { useNavigate } from 'react-router-dom';
 import { API_BASE } from '../utils/api';
 import { audioService } from '../utils/audio';
-import NeuralLogo from '../components/NeuralLogo';
+import BrandHeader from '../components/BrandHeader';
 
 const ParticipantDashboard = () => {
   const UPI_ID = 'gxwr1.wallet@phonepe';
@@ -145,9 +145,9 @@ const ParticipantDashboard = () => {
       ? [{ category: String(participant?.category || '').trim(), event: String(participant.event).trim() }]
       : []);
 
-  const upiLink = `upi://pay?pa=${encodeURIComponent(UPI_ID)}&pn=${encodeURIComponent('Neuron Nexus 2026')}&am=${encodeURIComponent(String(paymentAmount))}&cu=INR&tn=${encodeURIComponent(`Registration Fee ${participant?.ticketId || ''}`)}`;
+  const upiLink = `upi://pay?pa=${encodeURIComponent(UPI_ID)}&pn=${encodeURIComponent('Neural Nexus 2026')}&am=${encodeURIComponent(String(paymentAmount))}&cu=INR&tn=${encodeURIComponent(`Registration Fee ${participant?.ticketId || ''}`)}`;
   const whatsappProofLink = `https://wa.me/${PAYMENT_WHATSAPP}?text=${encodeURIComponent(
-    `Hello Team Neuron Nexus 2026,\n\nI have completed payment.\nName: ${participant?.fullName || ''}\nTicket ID: ${participant?.ticketId || ''}\nAmount: Rs.${paymentAmount}\nUPI ID: ${UPI_ID}\n\nPlease verify payment.`
+    `Hello Team Neural Nexus 2026,\n\nI have completed payment.\nName: ${participant?.fullName || ''}\nTicket ID: ${participant?.ticketId || ''}\nAmount: Rs.${paymentAmount}\nUPI ID: ${UPI_ID}\n\nPlease verify payment.`
   )}`;
 
   const activeEvent = selectedEventsList[activeEventIndex];
@@ -157,6 +157,7 @@ const ParticipantDashboard = () => {
 
   return (
     <div className="pt-28 pb-20 px-4 sm:px-6 max-w-6xl mx-auto min-h-screen">
+      <BrandHeader />
       
       {/* Header HUD */}
       <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-10">

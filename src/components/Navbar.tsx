@@ -26,9 +26,10 @@ const Navbar = () => {
         >
           <NeuralLogo size={40} className="shrink-0 group-hover:scale-105 transition-transform duration-300" />
           <div className="min-w-0">
-            <p className="text-[10px] sm:text-[11px] text-slate-300 uppercase tracking-[0.18em] font-mono truncate font-black">APEC CSE (AI and ML)</p>
-            <span className="block text-base sm:text-lg md:text-xl font-black tracking-tight text-white group-hover:text-tech-cyan transition-colors truncate">
-              Neuron <span className="text-tech-cyan">Nexus 2026</span>
+            <p className="text-[10px] sm:text-[11px] text-slate-300 uppercase tracking-[0.18em] font-mono truncate font-black">Adhiparasakthi Engineering College</p>
+            <p className="text-[9px] sm:text-[10px] text-tech-cyan uppercase tracking-[0.15em] font-mono truncate font-black mb-1">Department of CSE (AI & ML)</p>
+            <span className="block text-base sm:text-lg md:text-xl font-black tracking-tight text-white group-hover:text-tech-cyan transition-colors truncate uppercase">
+              Neural <span className="text-tech-cyan">Nexus 2026</span>
             </span>
           </div>
         </NavLink>
