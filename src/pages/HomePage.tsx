@@ -150,7 +150,7 @@ const HomePage = () => {
         </motion.div>
       </section>
 
-      {/* Symposium Logistics */}
+      {/* Seminar Logistics */}
       <section className="px-6 max-w-5xl mx-auto mb-24 relative z-10 text-left">
         <div className="bg-white/5 border border-white/10 rounded-[2.5rem] p-6 md:p-8 backdrop-blur-md relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-tech-cyan/5 blur-[80px] -z-10"></div>
