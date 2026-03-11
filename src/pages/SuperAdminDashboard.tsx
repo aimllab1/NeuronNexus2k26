@@ -4,7 +4,6 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { API_BASE } from '../utils/api';
 import { audioService } from '../utils/audio';
-import BrandHeader from '../components/BrandHeader';
 
 const participantCountOf = (reg: any) => {
   const direct = Number(reg?.participantCount);
@@ -325,12 +324,11 @@ const SuperAdminDashboard = () => {
 
       {/* Main Command Center */}
       <main className="flex-grow overflow-y-auto p-4 md:p-8 custom-scrollbar relative z-10">
-        <BrandHeader />
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-12">
-                <div>
-                  <h1 className="text-2xl md:text-3xl font-black uppercase tracking-tight">CENTRAL <span className="text-tech-cyan">COMMAND</span></h1>
-                  <p className="text-[10px] md:text-xs text-slate-500 uppercase font-mono tracking-widest mt-1">Neural Nexus 2026 MASTER CONTROL PANEL</p>
-                </div>
+          <div>
+            <h1 className="text-2xl md:text-3xl font-black uppercase tracking-tight">CENTRAL <span className="text-tech-cyan">COMMAND</span></h1>
+            <p className="text-[10px] md:text-xs text-slate-500 uppercase font-mono tracking-widest mt-1">Neuron Nexus 2026 MASTER CONTROL PANEL</p>
+          </div>
           <div className="flex flex-col md:flex-row w-full md:w-auto gap-4 items-center">
              {/* Registration Toggle */}
              <button

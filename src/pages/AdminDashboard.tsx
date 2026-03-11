@@ -3,7 +3,6 @@ import { Search, CreditCard, LogOut, Award, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { API_BASE } from '../utils/api';
-import BrandHeader from '../components/BrandHeader';
 
 const EVENT_OPTIONS = [
   'Concept Expo',
@@ -134,7 +133,6 @@ const AdminDashboard = () => {
 
   return (
     <div className="pt-28 pb-20 px-4 sm:px-6 max-w-7xl mx-auto min-h-screen">
-      <BrandHeader />
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-10">
         <div>
           <h1 className="text-3xl sm:text-4xl font-black text-white mb-2 tracking-tight uppercase">

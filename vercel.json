@@ -1,5 +1,6 @@
 {
   "version": 2,
+  "alias": "tech-fusion-nn.vercel.app",
   "builds": [
     {
       "src": "package.json",
