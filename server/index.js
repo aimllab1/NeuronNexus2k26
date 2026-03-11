@@ -598,14 +598,15 @@ app.delete('/api/admin/delete-registration/:id', async (req, res) => {
 // 10b. Admin: Update Registration Details
 app.patch('/api/admin/update-registration/:id', async (req, res) => {
   try {
-    const { fullName, email, phone, college, department, year, password, teamMembers } = req.body;
-    const updateData = {};
-    if (fullName) updateData.fullName = sanitizeText(fullName);
-    if (email) updateData.email = normalizeEmail(email);
-    if (phone) updateData.phone = sanitizeText(phone);
-    if (college) updateData.college = sanitizeText(college);
-    if (department) updateData.department = sanitizeText(department);
-    if (year) updateData.year = sanitizeText(year);
+    const reg = await Registration.findById(req.params.id);
+    if (!reg) return res.status(404).json({ success: false, message: 'Participant not found.' });
+
+    if (req.body.fullName !== undefined) reg.fullName = sanitizeText(req.body.fullName);
+    if (req.body.email !== undefined) reg.email = normalizeEmail(req.body.email);
+    if (req.body.phone !== undefined) reg.phone = sanitizeText(req.body.phone);
+    if (req.body.college !== undefined) reg.college = sanitizeText(req.body.college);
+    if (req.body.department !== undefined) reg.department = sanitizeText(req.body.department);
+    if (req.body.year !== undefined) reg.year = sanitizeText(req.body.year);
 
     const eventPayloadProvided =
       req.body.selectedEvents !== undefined ||
@@ -622,23 +623,25 @@ app.patch('/api/admin/update-registration/:id', async (req, res) => {
         return res.status(400).json({ success: false, message: eventsValidationError });
       }
       const primarySelection = safeSelectedEvents[0];
-      updateData.selectedEvents = safeSelectedEvents;
-      updateData.category = primarySelection.category;
-      updateData.event = primarySelection.event;
+      reg.selectedEvents = safeSelectedEvents;
+      reg.category = primarySelection.category;
+      reg.event = primarySelection.event;
     }
 
-    if (teamMembers) {
-      const details = buildPaymentDetails(teamMembers);
-      updateData.teamMembers = details.teamMembers;
-      updateData.participantCount = details.participantCount;
-      updateData.paymentAmount = details.paymentAmount;
+    if (req.body.teamMembers !== undefined) {
+      const details = buildPaymentDetails(req.body.teamMembers);
+      reg.teamMembers = details.teamMembers;
+      reg.participantCount = details.participantCount;
+      reg.paymentAmount = details.paymentAmount;
     }
-    if (password) {
-      updateData.password = await bcrypt.hash(password, 10);
-      updateData.isPasswordChanged = true;
+
+    if (req.body.password) {
+      reg.password = await bcrypt.hash(req.body.password, 10);
+      reg.isPasswordChanged = true;
     }
-    const updated = await Registration.findByIdAndUpdate(req.params.id, { $set: updateData }, { new: true });
-    res.json({ success: true, participant: enrichRegistration(updated) });
+
+    await reg.save();
+    res.json({ success: true, participant: enrichRegistration(reg) });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }

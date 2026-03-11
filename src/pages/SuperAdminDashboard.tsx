@@ -242,6 +242,7 @@ const SuperAdminDashboard = () => {
 
     setIsUpdating(true);
     try {
+      const primarySelection = editFormData.selectedEvents[0];
       const payload: any = { 
         ...editFormData,
         teamMembers: editFormData.teamMembers.map(m => m.trim()).filter(Boolean),
@@ -249,6 +250,8 @@ const SuperAdminDashboard = () => {
           category: selection.category,
           event: selection.event,
         })),
+        category: primarySelection?.category || '',
+        event: primarySelection?.event || '',
       };
       // Only include password if it's not empty
       if (!payload.password) delete payload.password;
