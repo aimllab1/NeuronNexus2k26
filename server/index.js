@@ -606,6 +606,27 @@ app.patch('/api/admin/update-registration/:id', async (req, res) => {
     if (college) updateData.college = sanitizeText(college);
     if (department) updateData.department = sanitizeText(department);
     if (year) updateData.year = sanitizeText(year);
+
+    const eventPayloadProvided =
+      req.body.selectedEvents !== undefined ||
+      req.body.category !== undefined ||
+      req.body.event !== undefined;
+    if (eventPayloadProvided) {
+      const safeSelectedEvents = normalizeSelectedEvents(
+        req.body.selectedEvents,
+        req.body.category,
+        req.body.event
+      );
+      const eventsValidationError = validateSelectedEvents(safeSelectedEvents);
+      if (eventsValidationError) {
+        return res.status(400).json({ success: false, message: eventsValidationError });
+      }
+      const primarySelection = safeSelectedEvents[0];
+      updateData.selectedEvents = safeSelectedEvents;
+      updateData.category = primarySelection.category;
+      updateData.event = primarySelection.event;
+    }
+
     if (teamMembers) {
       const details = buildPaymentDetails(teamMembers);
       updateData.teamMembers = details.teamMembers;

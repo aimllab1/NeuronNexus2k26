@@ -5,6 +5,49 @@ import { motion } from 'framer-motion';
 import { API_BASE } from '../utils/api';
 import { audioService } from '../utils/audio';
 
+type EventCategory = 'Technical' | 'Non-Technical';
+type SelectedEvent = { category: EventCategory; event: string };
+
+const TECHNICAL_EVENTS = ['Concept Expo', 'Proto Fest', 'Code Rush', 'App Architects', 'Brain Rush'];
+const NON_TECHNICAL_EVENTS = ['E-sports', 'Sonic Nexus', 'CID', 'Auction Battle', 'Crown Mate'];
+const EVENT_LIMIT = 2;
+const EVENT_NAME_ALIASES: Record<string, string> = {
+  'CID (Criminal Investigation Department)': 'CID',
+  'Champian Pics': 'Auction Battle',
+  'Champion Pics': 'Auction Battle',
+};
+const EVENT_CATEGORY_BY_NAME = new Map<string, EventCategory>([
+  ...TECHNICAL_EVENTS.map((eventName): [string, EventCategory] => [eventName, 'Technical']),
+  ...NON_TECHNICAL_EVENTS.map((eventName): [string, EventCategory] => [eventName, 'Non-Technical']),
+]);
+
+const normalizeCategory = (value: unknown): EventCategory => {
+  const raw = String(value || '').trim().toLowerCase();
+  if (raw === 'technical') return 'Technical';
+  return 'Non-Technical';
+};
+
+const normalizeEventName = (value: unknown) => {
+  const raw = String(value || '').trim();
+  return EVENT_NAME_ALIASES[raw] || raw;
+};
+
+const validateEditableEvents = (selectedEvents: SelectedEvent[]) => {
+  if (!Array.isArray(selectedEvents) || selectedEvents.length < 1) {
+    return 'Select at least 1 event.';
+  }
+  if (selectedEvents.length > EVENT_LIMIT) {
+    return `Maximum ${EVENT_LIMIT} events are allowed.`;
+  }
+  if (selectedEvents.length === 2) {
+    const nonTechnicalCount = selectedEvents.filter((selection) => selection.category === 'Non-Technical').length;
+    if (nonTechnicalCount === 2) {
+      return 'You cannot select two non-technical events. Please keep at most one non-technical event.';
+    }
+  }
+  return '';
+};
+
 const participantCountOf = (reg: any) => {
   const direct = Number(reg?.participantCount);
   if (Number.isFinite(direct) && direct > 0) return direct;
@@ -31,16 +74,37 @@ const selectedEventsOf = (reg: any) => {
     ? reg.selectedEvents
         .map((selection: any) => ({
           category: String(selection?.category || '').trim(),
-          event: String(selection?.event || '').trim(),
+          event: normalizeEventName(selection?.event),
         }))
         .filter((selection: any) => selection.event)
     : [];
   if (selected.length > 0) return selected;
 
-  const fallbackEvent = String(reg?.event || '').trim();
+  const fallbackEvent = normalizeEventName(reg?.event);
   if (!fallbackEvent) return [];
   return [{ category: String(reg?.category || '').trim(), event: fallbackEvent }];
 };
+
+const editableSelectedEventsOf = (reg: any): SelectedEvent[] => {
+  const normalized = selectedEventsOf(reg)
+    .map((selection: any) => {
+      const eventName = normalizeEventName(selection?.event);
+      const category = EVENT_CATEGORY_BY_NAME.get(eventName) || normalizeCategory(selection?.category);
+      return eventName ? { category, event: eventName } : null;
+    })
+    .filter((selection: SelectedEvent | null): selection is SelectedEvent => Boolean(selection));
+
+  const uniqueByEvent: SelectedEvent[] = [];
+  const seen = new Set<string>();
+  for (const selection of normalized) {
+    const key = selection.event.toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    uniqueByEvent.push(selection);
+  }
+  return uniqueByEvent.slice(0, EVENT_LIMIT);
+};
+
 const eventSummaryOf = (reg: any) =>
   selectedEventsOf(reg)
     .map((selection: any) => selection.event)
@@ -68,7 +132,8 @@ const SuperAdminDashboard = () => {
     department: '',
     year: '',
     password: '',
-    teamMembers: ['', '', '']
+    teamMembers: ['', '', ''],
+    selectedEvents: [] as SelectedEvent[],
   });
   const [isUpdating, setIsUpdating] = useState(false);
   const [generatedPass, setGeneratedPass] = useState('');
@@ -122,6 +187,7 @@ const SuperAdminDashboard = () => {
   const handleEditClick = (reg: any) => {
     const members = Array.isArray(reg.teamMembers) ? [...reg.teamMembers] : [];
     while (members.length < 3) members.push('');
+    const normalizedSelections = editableSelectedEventsOf(reg);
     
     setEditingReg(reg);
     setEditFormData({
@@ -132,7 +198,35 @@ const SuperAdminDashboard = () => {
       department: reg.department || '',
       year: reg.year || '',
       password: '', // Keep password empty initially
-      teamMembers: members.slice(0, 3)
+      teamMembers: members.slice(0, 3),
+      selectedEvents: normalizedSelections,
+    });
+  };
+
+  const toggleSelectedEvent = (category: EventCategory, eventName: string) => {
+    setEditFormData((prev) => {
+      const exists = prev.selectedEvents.some((selection) => selection.event === eventName);
+      if (exists) {
+        return {
+          ...prev,
+          selectedEvents: prev.selectedEvents.filter((selection) => selection.event !== eventName),
+        };
+      }
+      if (prev.selectedEvents.length >= EVENT_LIMIT) {
+        alert(`Maximum ${EVENT_LIMIT} events are allowed.`);
+        return prev;
+      }
+      if (
+        category === 'Non-Technical' &&
+        prev.selectedEvents.some((selection) => selection.category === 'Non-Technical')
+      ) {
+        alert('You cannot select two non-technical events.');
+        return prev;
+      }
+      return {
+        ...prev,
+        selectedEvents: [...prev.selectedEvents, { category, event: eventName }],
+      };
     });
   };
 
@@ -140,11 +234,21 @@ const SuperAdminDashboard = () => {
     e.preventDefault();
     if (!editingReg) return;
 
+    const eventsValidationError = validateEditableEvents(editFormData.selectedEvents);
+    if (eventsValidationError) {
+      alert(eventsValidationError);
+      return;
+    }
+
     setIsUpdating(true);
     try {
       const payload: any = { 
         ...editFormData,
-        teamMembers: editFormData.teamMembers.map(m => m.trim()).filter(Boolean)
+        teamMembers: editFormData.teamMembers.map(m => m.trim()).filter(Boolean),
+        selectedEvents: editFormData.selectedEvents.map((selection) => ({
+          category: selection.category,
+          event: selection.event,
+        })),
       };
       // Only include password if it's not empty
       if (!payload.password) delete payload.password;
@@ -556,6 +660,50 @@ const SuperAdminDashboard = () => {
               </div>
 
               <div className="pt-4 border-t border-white/5">
+                <h3 className="text-xs font-black uppercase tracking-widest text-slate-400 mb-4">Participating Events</h3>
+                <p className="text-[10px] text-slate-500 uppercase tracking-widest font-mono mb-4">
+                  Select 1 or 2 events. Two non-technical events are not allowed.
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <EventEditPicker
+                    title="Technical Events"
+                    events={TECHNICAL_EVENTS}
+                    category="Technical"
+                    selectedEvents={editFormData.selectedEvents}
+                    onToggle={toggleSelectedEvent}
+                    activeClassName="border-tech-blue/50 bg-tech-blue/20 text-tech-blue"
+                  />
+                  <EventEditPicker
+                    title="Non-Technical Events"
+                    events={NON_TECHNICAL_EVENTS}
+                    category="Non-Technical"
+                    selectedEvents={editFormData.selectedEvents}
+                    onToggle={toggleSelectedEvent}
+                    activeClassName="border-purple-500/50 bg-purple-500/20 text-purple-300"
+                  />
+                </div>
+                <div className="mt-4 p-3 rounded-xl bg-white/5 border border-white/10">
+                  <p className="text-[10px] text-slate-400 uppercase tracking-widest font-mono">
+                    Selected: {editFormData.selectedEvents.length}/{EVENT_LIMIT}
+                  </p>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {editFormData.selectedEvents.map((selection) => (
+                      <span
+                        key={selection.event}
+                        className={`px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider border ${
+                          selection.category === 'Technical'
+                            ? 'border-tech-blue/40 text-tech-blue bg-tech-blue/10'
+                            : 'border-purple-400/40 text-purple-300 bg-purple-500/10'
+                        }`}
+                      >
+                        {selection.event}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-4 border-t border-white/5">
                 <h3 className="text-xs font-black uppercase tracking-widest text-slate-400 mb-4">Security Terminal</h3>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -637,6 +785,43 @@ const SuperAdminDashboard = () => {
     </div>
   );
 };
+
+const EventEditPicker = ({
+  title,
+  events,
+  category,
+  selectedEvents,
+  onToggle,
+  activeClassName,
+}: {
+  title: string;
+  events: string[];
+  category: EventCategory;
+  selectedEvents: SelectedEvent[];
+  onToggle: (category: EventCategory, eventName: string) => void;
+  activeClassName: string;
+}) => (
+  <div className="rounded-2xl border border-white/10 p-4 bg-space-950/40">
+    <p className="text-[10px] text-tech-cyan uppercase font-black tracking-widest opacity-60 mb-3">{title}</p>
+    <div className="grid grid-cols-1 gap-2">
+      {events.map((eventName) => {
+        const selected = selectedEvents.some((selection) => selection.event === eventName);
+        return (
+          <button
+            key={eventName}
+            type="button"
+            onClick={() => onToggle(category, eventName)}
+            className={`text-left px-3 py-3 rounded-xl border text-xs font-bold tracking-tight transition-all ${
+              selected ? activeClassName : 'border-white/10 text-slate-300 hover:bg-white/5'
+            }`}
+          >
+            {eventName}
+          </button>
+        );
+      })}
+    </div>
+  </div>
+);
 
 const EditInput = ({ label, value, onChange, type = "text" }: any) => (
   <div className="flex flex-col gap-1.5">
