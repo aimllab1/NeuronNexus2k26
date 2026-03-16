@@ -31,35 +31,11 @@ const LoginPage = () => {
     setPassword('');
   }, []);
 
-  const handleParticipantLogin = async () => {
-    const loginEmail = username.trim().toLowerCase();
-    const loginPassword = password.trim();
-    const response = await fetch(`${API_BASE}/api/participant/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: loginEmail, password: loginPassword }),
-    });
-    const data = await response.json();
-
-    if (!data.success) {
-      setPassword('');
-      alert(data.message || 'Login failed.');
-      return;
-    }
-
-    localStorage.setItem('participant_id', data.id);
-    localStorage.removeItem('admin_session');
-    localStorage.removeItem('admin_user');
-    localStorage.removeItem('super_admin_session');
-    setPassword('');
-    navigate('/dashboard');
-  };
-
-  const handleAdminLogin = () => {
-    const adminUser = username.trim().toLowerCase();
+  const handleAdminLogin = (trimmedId: string, trimmedPass: string) => {
+    const adminUser = trimmedId.toLowerCase();
     const config = ADMIN_CREDENTIALS[adminUser];
 
-    if (!config || password !== config.password) {
+    if (!config || trimmedPass !== config.password) {
       setPassword('');
       alert('Invalid Credentials. Access Denied.');
       return;
@@ -83,7 +59,9 @@ const LoginPage = () => {
     e.preventDefault();
 
     const loginId = username.trim();
-    if (!loginId || !password) {
+    const loginPass = password.trim();
+
+    if (!loginId || !loginPass) {
       alert('Enter login ID and password.');
       return;
     }
@@ -92,7 +70,26 @@ const LoginPage = () => {
 
     if (isEmailLogin) {
       try {
-        await handleParticipantLogin();
+        const loginEmail = loginId.toLowerCase();
+        const response = await fetch(`${API_BASE}/api/participant/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: loginEmail, password: loginPass }),
+        });
+        const data = await response.json();
+
+        if (!data.success) {
+          setPassword('');
+          alert(data.message || 'Login failed.');
+          return;
+        }
+
+        localStorage.setItem('participant_id', data.id);
+        localStorage.removeItem('admin_session');
+        localStorage.removeItem('admin_user');
+        localStorage.removeItem('super_admin_session');
+        setPassword('');
+        navigate('/dashboard');
       } catch {
         setPassword('');
         alert('Server connection failed. Make sure the backend is running.');
@@ -100,7 +97,7 @@ const LoginPage = () => {
       return;
     }
 
-    handleAdminLogin();
+    handleAdminLogin(loginId, loginPass);
   };
 
   return (

@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 
 /**
@@ -8,7 +9,7 @@ import { Navigate, useLocation } from 'react-router-dom';
  * A transient key in sessionStorage is used to perform that one‑time
  * bypass; it is cleared immediately after use.
  */
-const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+const ProtectedRoute = ({ children }: { children: ReactNode }) => {
   const location = useLocation();
   const isAuthenticated = localStorage.getItem('admin_session') === 'true';
 
