@@ -110,18 +110,18 @@ const AdminDashboard = () => {
 
   const stats = useMemo(
     () => ({
-      totalRegistrations: registrations.length,
-      totalParticipants: registrations.reduce((sum, reg) => sum + participantCountOf(reg), 0),
-      paid: registrations.filter((reg) => Boolean(reg?.isPaid)).length,
-      attendance: registrations.filter((reg) => Boolean(reg?.attendance)).length,
-      paidAmount: registrations
+      totalRegistrations: filtered.length,
+      totalParticipants: filtered.reduce((sum, reg) => sum + participantCountOf(reg), 0),
+      paid: filtered.filter((reg) => Boolean(reg?.isPaid)).length,
+      attendance: filtered.filter((reg) => Boolean(reg?.attendance)).length,
+      paidAmount: filtered
         .filter((reg) => Boolean(reg?.isPaid))
         .reduce((sum, reg) => sum + paymentAmountOf(reg), 0),
-      pendingAmount: registrations
+      pendingAmount: filtered
         .filter((reg) => !Boolean(reg?.isPaid))
         .reduce((sum, reg) => sum + paymentAmountOf(reg), 0),
     }),
-    [registrations]
+    [filtered]
   );
 
   const handleLogout = () => {

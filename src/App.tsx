@@ -12,6 +12,8 @@ import AttendanceDashboard from './pages/AttendanceDashboard';
 import CoordinatorDashboard from './pages/CoordinatorDashboard';
 import CertificationDashboard from './pages/CertificationDashboard';
 import SuperAdminDashboard from './pages/SuperAdminDashboard';
+import AdminSearchDashboard from './pages/AdminSearchDashboard';
+import CoordinatorContactDashboard from './pages/CoordinatorContactDashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 import SuperAdminRoute from './components/SuperAdminRoute';
 import BackgroundHUD from './components/BackgroundHUD';
@@ -48,10 +50,12 @@ function AppContent() {
           <Route path="/dashboard" element={<ParticipantDashboard />} />
 
           {/* Admin 1-4: protected by regular admin_session */}
+          <Route path="/admin-control-pannel-0" element={<ProtectedRoute><CoordinatorContactDashboard /></ProtectedRoute>} />
           <Route path="/admin-control-pannel-1" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
           <Route path="/admin-control-pannel-2" element={<ProtectedRoute><AttendanceDashboard /></ProtectedRoute>} />
           <Route path="/coordinator-panel-3" element={<ProtectedRoute><CoordinatorDashboard /></ProtectedRoute>} />
           <Route path="/admin-control-pannel-4" element={<ProtectedRoute><CertificationDashboard /></ProtectedRoute>} />
+          <Route path="/admin-search-dashboard" element={<ProtectedRoute><AdminSearchDashboard /></ProtectedRoute>} />
 
           {/* Admin 5: protected by separate super_admin_session key */}
           <Route path="/admin-control-pannel-5" element={<SuperAdminRoute><SuperAdminDashboard /></SuperAdminRoute>} />

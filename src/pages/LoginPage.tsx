@@ -12,6 +12,8 @@ type AdminConfig = {
 };
 
 const ADMIN_CREDENTIALS: Record<string, AdminConfig> = {
+  admin0: { password: 'sympo2026c0', route: '/admin-control-pannel-0' },
+  admin: { password: '@gxwr1', route: '/admin-search-dashboard' },
   admin1: { password: 'sympo2026p1', route: '/admin-control-pannel-1' },
   admin2: { password: 'sympo2026p2', route: '/admin-control-pannel-2' },
   coordinator: { password: 'sympo2026c', route: '/coordinator-panel-3' },
