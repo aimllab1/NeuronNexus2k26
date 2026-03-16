@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, ReactNode } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Phone, MessageSquare, User, Filter, LogOut, Loader2, Users, CreditCard } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -287,7 +287,7 @@ const CoordinatorContactDashboard = () => {
   );
 };
 
-const StatCard = ({ label, value, icon }: { label: string; value: string | number; icon: React.ReactNode }) => (
+const StatCard = ({ label, value, icon }: { label: string; value: string | number; icon: ReactNode }) => (
   <div className="bg-space-900/60 border border-white/10 rounded-3xl p-6 relative overflow-hidden group">
     <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
       {icon}
