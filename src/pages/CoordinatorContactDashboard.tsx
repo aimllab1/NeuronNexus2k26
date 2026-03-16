@@ -74,8 +74,9 @@ const CoordinatorContactDashboard = () => {
 
   const filtered = useMemo(() => {
     if (!selectedEvent) return [];
+    const safeRegs = Array.isArray(registrations) ? registrations : [];
     
-    return registrations.filter((reg) => {
+    return safeRegs.filter((reg) => {
       const matchesSearch = 
         String(reg?.fullName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
         String(reg?.phone || '').includes(searchTerm);
@@ -93,8 +94,9 @@ const CoordinatorContactDashboard = () => {
 
   const stats = useMemo(() => {
     if (!selectedEvent) return { totalTeams: 0, totalPeople: 0, paid: 0, unpaid: 0 };
+    const safeRegs = Array.isArray(registrations) ? registrations : [];
     
-    const eventTeams = registrations.filter(reg => matchesEventFilter(reg, selectedEvent));
+    const eventTeams = safeRegs.filter(reg => matchesEventFilter(reg, selectedEvent));
     
     return {
       totalTeams: eventTeams.length,

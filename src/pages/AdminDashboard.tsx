@@ -99,7 +99,8 @@ const AdminDashboard = () => {
 
   const filtered = useMemo(() => {
     const key = searchTerm.toLowerCase();
-    return registrations.filter((reg) => {
+    const safeRegs = Array.isArray(registrations) ? registrations : [];
+    return safeRegs.filter((reg) => {
       const matchesSearch =
         String(reg?.fullName || '').toLowerCase().includes(key) ||
         String(reg?.ticketId || '').toLowerCase().includes(key);
@@ -109,18 +110,21 @@ const AdminDashboard = () => {
   }, [registrations, searchTerm, eventFilter]);
 
   const stats = useMemo(
-    () => ({
-      totalRegistrations: filtered.length,
-      totalParticipants: filtered.reduce((sum, reg) => sum + participantCountOf(reg), 0),
-      paid: filtered.filter((reg) => Boolean(reg?.isPaid)).length,
-      attendance: filtered.filter((reg) => Boolean(reg?.attendance)).length,
-      paidAmount: filtered
-        .filter((reg) => Boolean(reg?.isPaid))
-        .reduce((sum, reg) => sum + paymentAmountOf(reg), 0),
-      pendingAmount: filtered
-        .filter((reg) => !Boolean(reg?.isPaid))
-        .reduce((sum, reg) => sum + paymentAmountOf(reg), 0),
-    }),
+    () => {
+      const safeFiltered = Array.isArray(filtered) ? filtered : [];
+      return {
+        totalRegistrations: safeFiltered.length,
+        totalParticipants: safeFiltered.reduce((sum, reg) => sum + participantCountOf(reg), 0),
+        paid: safeFiltered.filter((reg) => Boolean(reg?.isPaid)).length,
+        attendance: safeFiltered.filter((reg) => Boolean(reg?.attendance)).length,
+        paidAmount: safeFiltered
+          .filter((reg) => Boolean(reg?.isPaid))
+          .reduce((sum, reg) => sum + paymentAmountOf(reg), 0),
+        pendingAmount: safeFiltered
+          .filter((reg) => !Boolean(reg?.isPaid))
+          .reduce((sum, reg) => sum + paymentAmountOf(reg), 0),
+      };
+    },
     [filtered]
   );
 
