@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import type { ReactNode } from 'react';
 import { ShieldCheck, Activity, Users, CreditCard, Bell, ShieldAlert, LogOut, Search, Trash2, Edit2, X } from 'lucide-react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -117,6 +118,8 @@ const SuperAdminDashboard = () => {
   const [isTogglingRegistration, setIsTogglingRegistration] = useState(false);
   const [registrations, setRegistrations] = useState<any[]>([]);
   const [alerts, setAlerts] = useState<any[]>([]);
+  const [adminConfigs, setAdminConfigs] = useState<any[]>([]);
+  const [loadingAdmins, setLoadingAdmins] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [overlayAlert, setOverlayAlert] = useState<any | null>(null);
   const [resolvingAlertId, setResolvingAlertId] = useState<string>('');
@@ -141,6 +144,36 @@ const SuperAdminDashboard = () => {
 
   const navigate = useNavigate();
   const toArray = <T,>(value: unknown): T[] => (Array.isArray(value) ? value : []);
+
+  const fetchAdminConfigs = async () => {
+    setLoadingAdmins(true);
+    try {
+      const response = await fetch(`${API_BASE}/api/admin/config`);
+      const data = await response.json();
+      if (Array.isArray(data)) setAdminConfigs(data);
+    } catch (err) {
+      console.error('Error fetching admin configs:', err);
+    } finally {
+      setLoadingAdmins(false);
+    }
+  };
+
+  const updateAdminPassword = async (username: string, newPassword: string) => {
+    if (!newPassword) return;
+    try {
+      const response = await fetch(`${API_BASE}/api/admin/config/${username}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: newPassword }),
+      });
+      if (response.ok) {
+        alert(`Password for ${username} updated successfully!`);
+        fetchAdminConfigs();
+      }
+    } catch (err) {
+      alert('Failed to update password.');
+    }
+  };
 
   const fetchData = async () => {
     try {
@@ -338,6 +371,7 @@ const SuperAdminDashboard = () => {
 
   useEffect(() => {
     fetchData();
+    fetchAdminConfigs();
     const interval = setInterval(fetchData, 2000);
     return () => clearInterval(interval);
   }, []);
@@ -351,10 +385,10 @@ const SuperAdminDashboard = () => {
     openAlerts: alerts.filter((a) => isOpenAlert(a)).length,
   };
 
-  const filtered = registrations.filter(r => 
+  const filtered = Array.isArray(registrations) ? registrations.filter(r => 
     String(r?.fullName || '').toLowerCase().includes(searchTerm.toLowerCase()) || 
     String(r?.ticketId || '').toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  ) : [];
   const latestAlerts = alerts.slice(0, 8);
 
   return (
@@ -473,54 +507,80 @@ const SuperAdminDashboard = () => {
           />
         </div>
 
-        <div className="mb-10 bg-space-900/50 border border-white/10 rounded-2xl md:rounded-3xl p-4 md:p-6 backdrop-blur-md">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-sm font-black tracking-widest uppercase text-red-400">Emergency Alerts</h3>
-            <div className="flex items-center gap-2">
-              <span className="text-[10px] text-slate-500 uppercase font-mono">Latest {latestAlerts.length}</span>
-              <button
-                onClick={clearAlertHistory}
-                disabled={clearingHistory || alerts.length === 0}
-                className="px-3 py-1.5 rounded-lg bg-red-500/15 border border-red-500/35 hover:bg-red-500/25 disabled:opacity-50 disabled:cursor-not-allowed text-red-200 text-[10px] font-black uppercase tracking-wider transition-all"
-              >
-                {clearingHistory ? 'Clearing...' : 'Clear History'}
-              </button>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
+          <div className="bg-space-900/50 border border-white/10 rounded-2xl md:rounded-3xl p-4 md:p-6 backdrop-blur-md">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-sm font-black tracking-widest uppercase text-red-400">Emergency Alerts</h3>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] text-slate-500 uppercase font-mono">Latest {latestAlerts.length}</span>
+                <button
+                  onClick={clearAlertHistory}
+                  disabled={clearingHistory || alerts.length === 0}
+                  className="px-3 py-1.5 rounded-lg bg-red-500/15 border border-red-500/35 hover:bg-red-500/25 disabled:opacity-50 disabled:cursor-not-allowed text-red-200 text-[10px] font-black uppercase tracking-wider transition-all"
+                >
+                  {clearingHistory ? 'Clearing...' : 'Clear History'}
+                </button>
+              </div>
+            </div>
+            {latestAlerts.length === 0 ? (
+              <div className="text-xs text-slate-500 uppercase tracking-wider">No active alerts.</div>
+            ) : (
+              <div className="space-y-3 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+                {latestAlerts.map((a: any) => (
+                  <div key={a._id} className="p-3 rounded-xl border border-red-500/20 bg-red-500/5">
+                    <div className="flex flex-wrap items-center gap-2 mb-1">
+                      <span className="text-[10px] px-2 py-1 rounded border border-red-500/30 text-red-300 font-black uppercase tracking-wider">
+                        {a.event || 'Unknown Event'}
+                      </span>
+                      <span className={`text-[10px] px-2 py-1 rounded border font-black uppercase tracking-wider ${isOpenAlert(a) ? 'border-red-500/40 text-red-300' : 'border-green-500/40 text-green-300'}`}>
+                        {isOpenAlert(a) ? 'OPEN' : 'RESOLVED'}
+                      </span>
+                      <span className="text-[10px] text-slate-400 uppercase tracking-wider">
+                        By {a.triggeredBy || 'Coordinator'}
+                      </span>
+                    </div>
+                    <p className="text-[10px] text-white/90 mb-2">{a.message}</p>
+                    {isOpenAlert(a) && (
+                      <button
+                        onClick={() => resolveAlert(String(a._id || ''))}
+                        disabled={resolvingAlertId === String(a._id || '')}
+                        className="px-3 py-1 rounded-lg bg-red-500/20 border border-red-500/40 hover:bg-red-500/30 disabled:opacity-50 text-red-200 text-[9px] font-black uppercase tracking-wider"
+                      >
+                        {resolvingAlertId === String(a._id || '') ? 'Clearing...' : 'Clear Alert'}
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="bg-space-900/50 border border-white/10 rounded-2xl md:rounded-3xl p-4 md:p-6 backdrop-blur-md">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-xl bg-tech-cyan/10 flex items-center justify-center border border-tech-cyan/20">
+                <ShieldCheck className="text-tech-cyan" size={20} />
+              </div>
+              <div>
+                <h3 className="text-sm font-black uppercase tracking-tighter text-white">Admin Access <span className="text-tech-cyan">Control</span></h3>
+                <p className="text-[9px] text-slate-500 uppercase tracking-widest font-mono">Manage administrative credentials</p>
+              </div>
+            </div>
+            <div className="space-y-3 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+              {loadingAdmins ? (
+                <div className="py-10 text-center animate-pulse">
+                  <p className="text-[10px] text-slate-500 uppercase tracking-widest">Loading secure credentials...</p>
+                </div>
+              ) : (
+                adminConfigs.map((admin) => (
+                  <AdminPassRow 
+                    key={admin.username}
+                    admin={admin}
+                    onUpdate={updateAdminPassword}
+                  />
+                ))
+              )}
             </div>
           </div>
-          {latestAlerts.length === 0 ? (
-            <div className="text-xs text-slate-500 uppercase tracking-wider">No active alerts.</div>
-          ) : (
-            <div className="space-y-3">
-              {latestAlerts.map((a: any) => (
-                <div key={a._id} className="p-3 rounded-xl border border-red-500/20 bg-red-500/5">
-                  <div className="flex flex-wrap items-center gap-2 mb-1">
-                    <span className="text-[10px] px-2 py-1 rounded border border-red-500/30 text-red-300 font-black uppercase tracking-wider">
-                      {a.event || 'Unknown Event'}
-                    </span>
-                    <span className={`text-[10px] px-2 py-1 rounded border font-black uppercase tracking-wider ${isOpenAlert(a) ? 'border-red-500/40 text-red-300' : 'border-green-500/40 text-green-300'}`}>
-                      {isOpenAlert(a) ? 'OPEN' : 'RESOLVED'}
-                    </span>
-                    <span className="text-[10px] text-slate-400 uppercase tracking-wider">
-                      By {a.triggeredBy || 'Coordinator'}
-                    </span>
-                    <span className="text-[10px] text-slate-500 uppercase tracking-wider">
-                      {a.date ? new Date(a.date).toLocaleString() : ''}
-                    </span>
-                  </div>
-                  <p className="text-xs text-white/90">{a.message}</p>
-                  {isOpenAlert(a) && (
-                    <button
-                      onClick={() => resolveAlert(String(a._id || ''))}
-                      disabled={resolvingAlertId === String(a._id || '')}
-                      className="mt-3 px-3 py-1.5 rounded-lg bg-red-500/20 border border-red-500/40 hover:bg-red-500/30 disabled:opacity-50 disabled:cursor-not-allowed text-red-200 text-[10px] font-black uppercase tracking-wider transition-all"
-                    >
-                      {resolvingAlertId === String(a._id || '') ? 'Clearing...' : 'Clear Alert'}
-                    </button>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
         </div>
 
         <div className="bg-space-900/50 border border-white/10 rounded-2xl md:rounded-3xl overflow-x-auto backdrop-blur-md">
@@ -837,6 +897,59 @@ const EditInput = ({ label, value, onChange, type = "text" }: any) => (
     />
   </div>
 );
+
+const AdminPassRow = ({ admin, onUpdate }: { admin: any, onUpdate: (u: string, p: string) => void }) => {
+  const [pass, setPass] = useState(admin.password);
+  const [isEditing, setIsEditing] = useState(false);
+
+  return (
+    <div className="p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-white/10 transition-all">
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <div className={`w-6 h-6 rounded-md flex items-center justify-center ${admin.superAdmin ? 'bg-tech-cyan/20 text-tech-cyan' : 'bg-white/10 text-slate-400'}`}>
+             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <span className="text-[10px] font-black text-white uppercase tracking-widest">{admin.username}</span>
+        </div>
+        <span className={`text-[8px] px-1.5 py-0.5 rounded font-black uppercase tracking-tighter ${admin.superAdmin ? 'bg-tech-cyan/10 text-tech-cyan border border-tech-cyan/20' : 'bg-white/5 text-slate-500 border border-white/10'}`}>
+          {admin.superAdmin ? 'SUPER' : 'ADMIN'}
+        </span>
+      </div>
+
+      <div className="flex items-center gap-2">
+        {isEditing ? (
+          <div className="flex w-full gap-2">
+            <input 
+              type="text"
+              value={pass}
+              onChange={(e) => setPass(e.target.value)}
+              className="flex-grow bg-space-950 border border-tech-cyan/30 rounded-lg px-3 py-1.5 text-xs text-white outline-none"
+            />
+            <button 
+              onClick={() => {
+                onUpdate(admin.username, pass);
+                setIsEditing(false);
+              }}
+              className="p-1.5 rounded-lg bg-tech-cyan/20 text-tech-cyan hover:bg-tech-cyan/30 transition-colors"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="m9 12 2 2 4-4"/></svg>
+            </button>
+          </div>
+        ) : (
+          <div className="flex items-center justify-between w-full">
+            <p className="text-[10px] font-mono text-slate-500 tracking-widest">••••••••</p>
+            <button 
+              onClick={() => setIsEditing(true)}
+              className="p-1.5 rounded-lg bg-white/5 text-slate-500 hover:text-white transition-all"
+            >
+              <Edit2 size={12} />
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
 
 const AdminNavLink = ({ icon, label, to, active }: any) => (
   <NavLink 

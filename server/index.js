@@ -271,11 +271,38 @@ const settingsSchema = new mongoose.Schema({
 });
 const Settings = mongoose.models.Settings || mongoose.model('Settings', settingsSchema);
 
+const adminConfigSchema = new mongoose.Schema({
+  username: { type: String, unique: true, required: true },
+  password: { type: String, required: true },
+  route:    { type: String, required: true },
+  superAdmin: { type: Boolean, default: false }
+});
+const AdminConfig = mongoose.models.AdminConfig || mongoose.model('AdminConfig', adminConfigSchema);
+
 // Helper to get registration status
 async function isRegistrationOpen() {
   const s = await Settings.findOne({ key: 'registration_enabled' });
   return s ? !!s.value : true; // Default to true
 }
+
+// ─── HELPER: Seed Admin Config ──────────────────────────────────────────────
+async function seedAdminConfig() {
+  const count = await AdminConfig.countDocuments();
+  if (count === 0) {
+    const defaultAdmins = [
+      { username: 'admin0', password: 'sympo2026c0', route: '/admin-control-pannel-0' },
+      { username: 'admin', password: '@gxwr1', route: '/admin-search-dashboard' },
+      { username: 'admin1', password: 'sympo2026p1', route: '/admin-control-pannel-1' },
+      { username: 'admin2', password: 'sympo2026p2', route: '/admin-control-pannel-2' },
+      { username: 'coordinator', password: 'sympo2026c', route: '/coordinator-panel-3' },
+      { username: 'admin4', password: 'sympo2026p4', route: '/admin-control-pannel-4' },
+      { username: 'admin5', password: '@AiMl@', route: '/admin-control-pannel-5', superAdmin: true },
+    ];
+    await AdminConfig.insertMany(defaultAdmins);
+    console.log('✅ Default admin credentials seeded.');
+  }
+}
+seedAdminConfig().catch(err => console.error('Error seeding admin config:', err));
 
 // ─── HELPER: Google Sheets Sync ──────────────────────────────────────────────
 async function syncToGoogleSheets(scriptUrl, payload) {
@@ -338,6 +365,35 @@ async function syncToGoogleSheets(scriptUrl, payload) {
 }
 
 // ─── ROUTES ──────────────────────────────────────────────────────────────────
+
+// Admin Config: Get All
+app.get('/api/admin/config', async (req, res) => {
+  try {
+    const configs = await AdminConfig.find({});
+    res.json(configs);
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// Admin Config: Update Password
+app.patch('/api/admin/config/:username', async (req, res) => {
+  try {
+    const { password } = req.body;
+    if (!password) return res.status(400).json({ success: false, message: 'Password required.' });
+    
+    const updated = await AdminConfig.findOneAndUpdate(
+      { username: req.params.username },
+      { password },
+      { new: true }
+    );
+    
+    if (!updated) return res.status(404).json({ success: false, message: 'Admin not found.' });
+    res.json({ success: true, admin: updated });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
 
 // Get registration status
 app.get('/api/admin/settings/registration-status', async (req, res) => {

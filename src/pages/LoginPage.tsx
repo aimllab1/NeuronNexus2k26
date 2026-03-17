@@ -11,7 +11,7 @@ type AdminConfig = {
   superAdmin?: boolean;
 };
 
-const ADMIN_CREDENTIALS: Record<string, AdminConfig> = {
+const DEFAULT_ADMIN_CREDENTIALS: Record<string, AdminConfig> = {
   admin0: { password: 'sympo2026c0', route: '/admin-control-pannel-0' },
   admin: { password: '@gxwr1', route: '/admin-search-dashboard' },
   admin1: { password: 'sympo2026p1', route: '/admin-control-pannel-1' },
@@ -24,16 +24,38 @@ const ADMIN_CREDENTIALS: Record<string, AdminConfig> = {
 const LoginPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [adminCreds, setAdminCreds] = useState<Record<string, AdminConfig>>(DEFAULT_ADMIN_CREDENTIALS);
   const navigate = useNavigate();
 
   useEffect(() => {
     setUsername('');
     setPassword('');
+    fetchAdminConfig();
   }, []);
+
+  const fetchAdminConfig = async () => {
+    try {
+      const response = await fetch(`${API_BASE}/api/admin/config`);
+      const data = await response.json();
+      if (Array.isArray(data)) {
+        const config: Record<string, AdminConfig> = {};
+        data.forEach((item: any) => {
+          config[item.username] = {
+            password: item.password,
+            route: item.route,
+            superAdmin: item.superAdmin
+          };
+        });
+        setAdminCreds(config);
+      }
+    } catch (err) {
+      console.warn('Could not fetch remote admin config, using defaults.');
+    }
+  };
 
   const handleAdminLogin = (trimmedId: string, trimmedPass: string) => {
     const adminUser = trimmedId.toLowerCase();
-    const config = ADMIN_CREDENTIALS[adminUser];
+    const config = adminCreds[adminUser];
 
     if (!config || trimmedPass !== config.password) {
       setPassword('');
